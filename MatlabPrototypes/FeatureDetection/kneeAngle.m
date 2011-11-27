@@ -1,9 +1,26 @@
-function [ angle ] = kneeAngle( hipRight, knee, foot)
+function [ angleKnee ] = kneeAngle( allDataVector )
+
+    [hipLeft, hipCentre, hipRight]=deal(13,1, 17);
+    [kneeRight, ankleRight]=deal(18, 19);
+    hips=vertcat(...
+        allDataVector(hipLeft, :), ...
+        allDataVector(hipCentre, :), ...
+        allDataVector(hipRight, :)...
+    );
     
-    ba=knee-hipRight;
-    bc=knee-foot;
+    shinVector=allDataVector(kneeRight, :)-allDataVector(ankleRight, :);
+    thighVector=allDataVector(hipRight, :)-allDataVector(kneeRight, :);
     
-    angle=acos(dot(ba./norm(ba),bc./norm(bc)))*180/pi;
+    angleKnee=180-acos(...
+        dot(shinVector, thighVector)./(...
+        norm(shinVector)*norm(thighVector)...
+        ))*(180/pi);
+    
+%     debugPose(allDataVector);
+%     hold on
+%     plot3(endpts1(:, 1), endpts1(:, 3), endpts1(:, 2), 'b-x');
+%     axis equal; 
+%     pause
 
 end
 
