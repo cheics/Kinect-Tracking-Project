@@ -1,9 +1,30 @@
-function [ angle ] = hipAngle( hipCentre, hipRight, knee )
+function [ angleHip ] = hipAngle( allDataVector )
+
+    [hipLeft, hipCentre, hipRight]=deal(13,1, 17);
+    [kneeRight]=deal(18);
+    hips=vertcat(...
+        allDataVector(hipLeft, :), ...
+        allDataVector(hipCentre, :), ...
+        allDataVector(hipRight, :)...
+    );
     
-    ba=hipRight-hipCentre;
-    bc=hipRight-knee;
+    endpts1=bestFitLine3d(hips);
+    hipVector=endpts1(1, :)-endpts1(2, :);
+    hipVector(:, 2) = 0; %% reduce y dimensionality
     
-    angle=acos(dot(ba./norm(ba),bc./norm(bc)))*180/pi;
+    kneeVector=allDataVector(hipRight, :)-allDataVector(kneeRight, :);
+    kneeVector(:, 2) = 0; %% reduce y dimensionality
+    
+    angleHip=180-acos(...
+        dot(hipVector, kneeVector)./(...
+        norm(hipVector)*norm(kneeVector)...
+        ))*(180/pi);
+    
+%     debugPose(allDataVector);
+%     hold on
+%     plot3(endpts1(:, 1), endpts1(:, 3), endpts1(:, 2), 'b-x');
+%     axis equal; 
+%     pause
 
 end
 
