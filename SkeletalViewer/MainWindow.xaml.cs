@@ -20,6 +20,7 @@ using Microsoft.Samples.Kinect.WpfViewers;
 using System.Windows.Media;
 using System.Data;
 using System.IO;
+using System.Media;
 
 namespace SkeletalViewer
 {
@@ -429,28 +430,143 @@ namespace SkeletalViewer
         {
             if (button1.Content.ToString() == "Start")
             {
-                button1.Background = Brushes.Red;
-                button1.Content = "End";
-                index1 = KinectDiagnosticViewer.dt1.Rows.Count;
-                index2 = KinectDiagnosticViewer.dt2.Rows.Count;
+                if (training)
+                {
+                    capture = false;
+
+                    // Instantiate the dialog box
+                    ExerciseNameDialogBox dlg = new ExerciseNameDialogBox();
+
+                    // Configure the dialog box
+                    dlg.Owner = this;
+
+                    // Open the dialog box modally 
+                    dlg.ShowDialog();
+
+                    // Process data entered by user if dialog box is accepted
+                    if (dlg.DialogResult == true)
+                    {
+                        capture = true;
+
+                        angle = dlg.angle;
+                        performance = dlg.performance;
+                        deficiency = dlg.deficiency;
+                        index = dlg.index;
+                    }
+                }
+                if (capture)
+                {
+                    // please begin exercise
+                    startAudio.PlaySync();
+                    button1.Background = Brushes.Red;
+                    button1.Content = "End";
+                    index1 = KinectDiagnosticViewer.dt1.Rows.Count;
+                    //index2 = KinectDiagnosticViewer.dt2.Rows.Count;
+                    dateTime = DateTime.Now.ToString();
+                }
             }
             else
             {
                 //caputred1 = KinectDiagnosticViewer.dt1.Select(
                 DataTable dt1 = KinectDiagnosticViewer.dt1.Clone();
+                DataRow dr = dt1.NewRow();
+                dr["HipCenterX"] = dateTime;
+                if (training)
+                {
+                    dr["HipCenterY"] = angle;
+                    dr["HipCenterZ"] = performance;
+                    dr["SpineX"] = deficiency;
+                    dr["SpineY"] = index;
+                }
+                else
+                {
+                    dr["HipCenterY"] = "";
+                    dr["HipCenterZ"] = "";
+                    dr["SpineX"] = "";
+                    dr["SpineY"] = "";
+                }
+                dr["SpineZ"] = "";
+                dr["ShoulderCenterX"] = "";
+                dr["ShoulderCenterY"] = "";
+                dr["ShoulderCenterZ"] = "";
+                dr["HeadX"] = "";
+                dr["HeadY"] = "";
+                dr["HeadZ"] = "";
+                dr["ShoulderLeftX"] = "";
+                dr["ShoulderLeftY"] = "";
+                dr["ShoulderLeftZ"] = "";
+                dr["ElbowLeftX"] = "";
+                dr["ElbowLeftY"] = "";
+                dr["ElbowLeftZ"] = "";
+                dr["WristLeftX"] = "";
+                dr["WristLeftY"] = "";
+                dr["WristLeftZ"] = "";
+                dr["HandLeftX"] = "";
+                dr["HandLeftY"] = "";
+                dr["HandLeftZ"] = "";
+                dr["ShoulderRightX"] = "";
+                dr["ShoulderRightY"] = "";
+                dr["ShoulderRightZ"] = "";
+                dr["ElbowRightX"] = "";
+                dr["ElbowRightY"] = "";
+                dr["ElbowRightZ"] = "";
+                dr["WristRightX"] = "";
+                dr["WristRightY"] = "";
+                dr["WristRightZ"] = "";
+                dr["HandRightX"] = "";
+                dr["HandRightY"] = "";
+                dr["HandRightZ"] = "";
+                dr["HipLeftX"] = "";
+                dr["HipLeftY"] = "";
+                dr["HipLeftZ"] = "";
+                dr["KneeLeftX"] = "";
+                dr["KneeLeftY"] = "";
+                dr["KneeLeftZ"] = "";
+                dr["AnkleLeftX"] = "";
+                dr["AnkleLeftY"] = "";
+                dr["AnkleLeftZ"] = "";
+                dr["FootLeftX"] = "";
+                dr["FootLeftY"] = "";
+                dr["FootLeftZ"] = "";
+                dr["HipRightX"] = "";
+                dr["HipRightY"] = "";
+                dr["HipRightZ"] = "";
+                dr["KneeRightX"] = "";
+                dr["KneeRightY"] = "";
+                dr["KneeRightZ"] = "";
+                dr["AnkleRightX"] = "";
+                dr["AnkleRightY"] = "";
+                dr["AnkleRightZ"] = "";
+                dr["FootRightX"] = "";
+                dr["FootRightY"] = "";
+                dr["FootRightZ"] = "";
+                dt1.Rows.Add(dr);
                 for (int i = (index1 + 1); i < KinectDiagnosticViewer.dt1.Rows.Count; i++)
                 {
                     dt1.ImportRow(KinectDiagnosticViewer.dt1.Rows[i]);
                 }
-                DataTable dt2 = KinectDiagnosticViewer.dt2.Clone();
-                for (int i = (index1 + 1); i <= KinectDiagnosticViewer.dt2.Rows.Count; i++)
-                {
-                    dt2.ImportRow(KinectDiagnosticViewer.dt2.Rows[i]);
-                }
+                //DataTable dt2 = KinectDiagnosticViewer.dt2.Clone();
+                //for (int i = (index1 + 1); i <= KinectDiagnosticViewer.dt2.Rows.Count; i++)
+                //{
+                    //dt2.ImportRow(KinectDiagnosticViewer.dt2.Rows[i]);
+                //}
                 // write to csv file
-                CreateCSVFile(dt1, @"C:\Users\Public\Documents\player1.csv");
-                CreateCSVFile(dt2, @"C:\Users\Public\Documents\player2.csv");
-                this.Close();
+                if (training)
+                {
+                    CreateCSVFile(dt1, trainingPath + angle + performance + deficiency + index + ".csv");
+                    //CreateCSVFile(dt2, @"C:\Users\Public\Documents\player2.csv");
+                }
+                else
+                {
+                    CreateCSVFile(dt1, demoPath + exerciseFile + ".csv");
+                    //CreateCSVFile(dt2, @"C:\Users\Public\Documents\player2.csv");
+                }
+
+                // thank you
+                endAudio.PlaySync();
+                //this.Close();
+                button1.Background = Brushes.Green;
+                button1.Content = "Start";
             }
         } //Change to 1 if you only want to view one at a time. Switching will be enabled.
                                       //Each Kinect needs to be in its own USB hub, otherwise it won't have enough USB bandwidth.
@@ -459,6 +575,18 @@ namespace SkeletalViewer
         #endregion Private state
 
         private int index1;
-        private int index2;
+        //private int index2;
+        private string angle;
+        private string performance;
+        private string deficiency;
+        private string index;
+        private string dateTime;
+        private string exerciseFile = "demo";
+        private bool training = false;
+        private bool capture = true;
+        public string trainingPath = @"C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\DataFiles\Experiment3\";
+        private string demoPath = @"C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\DataFiles\Demo\";
+        private SoundPlayer startAudio = new SoundPlayer(@"C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\DataFiles\Demo\hi.wav");
+        private SoundPlayer endAudio = new SoundPlayer(@"C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\DataFiles\Demo\hi.wav");
     }
 }
