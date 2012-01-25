@@ -1,0 +1,7 @@
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Beta2 Samples\Kinect-Tracking-Project\CSMatIO\src\bin\Debug\csmatio.dll
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Beta2 Samples\Kinect-Tracking-Project\CSMatIO\src\bin\Debug\csmatio.pdb
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Beta2 Samples\Kinect-Tracking-Project\CSMatIO\src\bin\Debug\csmatio.xml
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Beta2 Samples\Kinect-Tracking-Project\CSMatIO\src\bin\Debug\zlib.net.dll
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Beta2 Samples\Kinect-Tracking-Project\CSMatIO\src\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Beta2 Samples\Kinect-Tracking-Project\CSMatIO\src\obj\Debug\csmatio.dll
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Beta2 Samples\Kinect-Tracking-Project\CSMatIO\src\obj\Debug\csmatio.pdb
