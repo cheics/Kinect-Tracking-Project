@@ -1,5 +1,6 @@
-function angleHip = f_hipAngle()
+function angleHip = f_hipAngle(poseNumber)
 	
+	hips=[obj.skelData[obj.jnts
     [hipLeft, hipCentre, hipRight]=deal(13,1, 17);
     [kneeRight]=deal(18);
     hips=vertcat(...
