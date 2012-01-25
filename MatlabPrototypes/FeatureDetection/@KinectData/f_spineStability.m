@@ -1,4 +1,4 @@
-function [ spineScore ] = spineStability2(allDataVector)
+function [ spineScore ] = spineStability(allDataVector)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -25,7 +25,7 @@ leftLeg=vertcat(...
     allDataVector(hipLeft, :)...
 );
 
-endpts1=bestFitLine3d(hips);
+endpts1=Utils.bestFitLine3d(hips);
 [endpts2, spineResid]=bestFitLine3d(spine);
 [endpts3]=bestFitLine3d(leftLeg);
 
@@ -44,8 +44,10 @@ spineScore=acos(dot(v1, v2)./(norm(v1)*norm(v2)))*(180/pi);
 
 % debugPose(allDataVector);
 % hold on;
-% plot3(endpts3(:, 1), endpts3(:, 3), endpts3(:, 2), 'k-x');
-% plot3(endpts2(:, 1), endpts2(:, 3), endpts2(:, 2), 'k-x');
+% line1=plot3(endpts3(:, 1), endpts3(:, 3), endpts3(:, 2), 'k-x');
+% line2=plot3(endpts2(:, 1), endpts2(:, 3), endpts2(:, 2), 'k-x');
+% set(line1,'LineWidth',3);
+% set(line2,'LineWidth',3);
 % hold off;
 % spineScore
 % pause
