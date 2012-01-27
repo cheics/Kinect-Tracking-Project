@@ -6,7 +6,7 @@ function [ peakLocations ] = poseFinder(obj, jointLook, xyz, reps, dpw, np)
 %   np:     Number on [0,1] to determine the percentage of 
 %               extra window value to keep for processing
     
-    rawDataIn=obj.skelData(:, xyz, jointLook);
+    rawDataIn=obj.skelData(:, obj.XYZ_IDS.(xyz), obj.jnts.(jointLook));
     fc = 0.5; % Cut-off frequency (Hz)
     fs = 20; % Sampling rate (Hz)
     order = 3; % Filter order

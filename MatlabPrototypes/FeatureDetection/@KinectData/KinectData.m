@@ -25,59 +25,90 @@ classdef KinectData < handle
 		skelData
 		% kinect data attributes
 		dateHeader
-		kinectHeight
-		kinectTilt
-		groundPlaneVector
+        % kinect calibration data
+		calibData
+        
 		% derived features
 		peakLocations
 		featureVector
+		groundPlane
 	end
 	
+	% Public simple methods
 	methods
 		function obj = KinectData(skelData, headerDetails, calibrationDetails)
-			% Get the skeleton data
+		%	KinectData	KinectData default constructor
+		%
+		%	Synopsis:
+		%		obj = KinectData(skelData, headerDetails, calibrationDetails)
+		%   
+		%	Input:
+		%		skelData			= A (nx60) matrix of KinectSkeleton data
+		%		headerDetails		= A struct that contains some details about
+		%								the collected Kinect data
+		%		calibrationDetails	= A struct containing information about the
+		%								Kinect camera orientation, the ground plane
+		%								and the posture correction
+		%
+		%	Output:
+		%		obj = the KinectData object
 			timeSteps=size(skelData); timeSteps=timeSteps(1);
 			obj.skelData=reshape(skelData, [timeSteps 3 20]);
-			
+
 			% Default peak detection joint
-			obj.peakDetectJoint=obj.jnts.KNEE_R;
-			obj.joint_xyz=obj.XYZ_IDS.Y; %2
-			
+			obj.peakDetectJoint='KNEE_R'; %obj.jnts.KNEE_R;
+			obj.joint_xyz='Y'; %obj.XYZ_IDS.Y;
+
 			% Get the file attributes
-			obj.dateHeader=dataFileIn.dateHeader;
-			obj.kinectHeight=dataFileIn.groundPlaneData.height;
-			obj.kinectTilt=dataFileIn.groundPlaneData.kinectTilt;
-			obj.groundPlaneVector=dataFileIn.groundPlaneData.gpVector;
-		end
-		
-		
-		function dataOutrestructureSkeletonData(timeStepDataIn)
+			obj.dateHeader=headerDetails;
+			obj.calibData=calibrationDetails;
 			
+			% Ground plane
+			% Hardcoded for debug
+			obj.groundPlane.loc=[0.0664, -0.6309, 2.7400];
+			obj.groundPlane.dir=[0, 1, 0];
 		end
-			
-		function features = CalcFeatures(obj)
-			features=[f_hipAngle() 0 0 0];
-			obj.featureVector=features;
-		end
-		
+					
 		function peaks = FindPeaks(obj)
+		%	FindPeaks	Wrapper function for poseFinder, includes several
+		%	default values as well as calibration data
 			peaks=obj.poseFinder(obj.peakDetectJoint, obj.joint_xyz, obj.reps, obj.dpw, obj.np);
 			obj.peakLocations=peaks;
 		end
 		
-		
-		
-	% Have private functions that calculate features (individually(
-	% Have public functions that calculate
-	%	Peaks
-	%	All features/subset of features
+		% Other utils
+        function features = poseFeatures(obj, frameNumber)
+			features=[...
+				f_hipAngle(obj, frameNumber),...
+				f_kneeAngle(obj, frameNumber), ...
+				f_spineStability(obj, frameNumber) ...
+			];
+			obj.featureVector=features;
+        end
 	end
-   
- 	methods (Access = private)
-		% Private utilities
-		peakLocations = poseFinder(obj, joint_xyz, xyz, reps, dpw, np)
-		
-		% Features
-		angleHip = f_hipAngle(obj);
- 	end
+	
+
+    
+    % Private utilities
+ 	methods (Access = public)
+		% Prototypes
+        peakLocations = poseFinder(obj, joint_xyz, xyz, reps, dpw, np)
+      
+        
+        function jointXYZ = getJointData(obj, frameNumber, jointName)
+            jointXYZ=obj.skelData(frameNumber, :, obj.jnts.(jointName));
+        end
+    end
+        
+    % Feature prototypes are private functions
+    methods (Access = private)
+		angleHip = f_hipAngle(obj, frameNumber)
+		angleKnee = f_kneeAngle(obj, frameNumber)
+		spineScore = f_spineStability(obj, frameNumber)
+	end
+	
+	methods (Access = private, Static=true)
+		[endpts, residuals] = bestFitLine3d( X )
+	end
+	
 end

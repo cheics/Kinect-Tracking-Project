@@ -1,57 +1,20 @@
-function [ spineScore ] = spineStability(allDataVector)
+function spineScore  = f_spineStability(obj, frameNumber)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
-[head,shoulderCentre, spine]=deal(4,3,2);
-[hipLeft, hipCentre, hipRight]=deal(13,1, 17);
-[ankleLeft, kneeLeft]=deal(15,14);
-
-hips=vertcat(...
-    allDataVector(hipLeft, :), ...
-    allDataVector(hipCentre, :), ...
-    allDataVector(hipRight, :)...
-);
-
 spine=vertcat(...
-    allDataVector(head, :), ...
-    allDataVector(shoulderCentre, :), ...
-    allDataVector(spine, :),...
-    allDataVector(hipCentre, :)...
+	obj.getJointData(frameNumber, 'HEAD'), ...
+	obj.getJointData(frameNumber, 'SHOULDER_C'), ...
+	obj.getJointData(frameNumber, 'SPINE'), ...
+	obj.getJointData(frameNumber, 'HIP_C') ...
 );
 
-leftLeg=vertcat(...
-    allDataVector(ankleLeft, :), ...
-    allDataVector(kneeLeft, :), ...
-    allDataVector(hipLeft, :)...
-);
+[endpts2, spineResid]=obj.bestFitLine3d(spine);
 
-endpts1=Utils.bestFitLine3d(hips);
-[endpts2, spineResid]=bestFitLine3d(spine);
-[endpts3]=bestFitLine3d(leftLeg);
-
-v1=endpts3(1, :)-endpts3(2, :);
+v1=obj.groundPlane.dir;
 v2=endpts2(2, :)-endpts2(1, :);
 
-
-% plot3(endpts3(:, 1), endpts3(:, 3), endpts3(:, 2), 'k-x',...
-%      endpts2(:, 1), endpts2(:, 3), endpts2(:, 2), 'b-o',...
-%     endpts1(:, 1), endpts1(:, 3), endpts1(:, 2), 'r-o');
-% axis equal; 
-% pause
-
-
-spineScore=acos(dot(v1, v2)./(norm(v1)*norm(v2)))*(180/pi);
-
-% debugPose(allDataVector);
-% hold on;
-% line1=plot3(endpts3(:, 1), endpts3(:, 3), endpts3(:, 2), 'k-x');
-% line2=plot3(endpts2(:, 1), endpts2(:, 3), endpts2(:, 2), 'k-x');
-% set(line1,'LineWidth',3);
-% set(line2,'LineWidth',3);
-% hold off;
-% spineScore
-% pause
-
+spineScore=180-acos(dot(v1, v2)./(norm(v1)*norm(v2)))*(180/pi);
 
 end
 
