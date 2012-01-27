@@ -34,10 +34,10 @@ classdef KinectData < handle
 	end
 	
 	methods
-		function obj = KinectData(dataFileIn)
+		function obj = KinectData(skelData, headerDetails, calibrationDetails)
 			% Get the skeleton data
-			timeSteps=size(dataFileIn.skelData); timeSteps=timeSteps(1);
-			obj.skelData=reshape(dataFileIn.skelData, [timeSteps 3 20]);
+			timeSteps=size(skelData); timeSteps=timeSteps(1);
+			obj.skelData=reshape(skelData, [timeSteps 3 20]);
 			
 			% Default peak detection joint
 			obj.peakDetectJoint=obj.jnts.KNEE_R;
