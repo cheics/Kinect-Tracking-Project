@@ -106,6 +106,18 @@ classdef KinectData < handle
 		angleHip = f_hipAngle(obj, frameNumber)
 		angleKnee = f_kneeAngle(obj, frameNumber)
 		spineScore = f_spineStability(obj, frameNumber)
+		
+		elbowshoulder_L = f_elbowAngle_L(obj, frameNumber)
+		elbowshoulder_R = f_elbowAngle_R(obj, frameNumber)
+		
+		headtilt = f_headtilt(obj, frameNumber)
+		headpitch = f_headpitch(obj, frameNumber)
+		
+		anklelevel = f_ankleLevel(obj, frameNumber)
+		handlevel = f_handLevel(obj, frameNumber)
+		hiplevel = f_hipLevel(obj, frameNumber)
+		shoulderlevel = f_shoulderLevel(obj, frameNumber)
+		
 	end
 	
 	methods (Access = private, Static=true)
