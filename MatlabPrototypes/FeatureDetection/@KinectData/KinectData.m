@@ -93,6 +93,7 @@ classdef KinectData < handle
  	methods (Access = public)
 		% Prototypes
         peakLocations = poseFinder(obj, joint_xyz, xyz, reps, dpw, np)
+		debugPose(obj, frameNumber)
       
         
         function jointXYZ = getJointData(obj, frameNumber, jointName)
