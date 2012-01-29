@@ -4,14 +4,14 @@ function [kdObj] = FactoryKinectData(matFileName)
 	% Extract the header data
 	dataDetails=struct();
 	dataDetails.date=kd.dateHeader;
+	dataDetails.poseEval=kd.poseEval;
 	
 	% Extract the calibration data
 	calibData=struct();
 	calibData.camOrientation=struct();
-	calibData.camOrientation.tilt=kd.groundPlaneData.kinectTilt;
+	calibData.camOrientation.tilt=kd.groundPlaneData.kinectTilt(1);
 	calibData.camOrientation.height=kd.groundPlaneData.height;
-	calibData.camOrientation.gravDir=kd.groundPlaneData.gravVector;
-	calibData.camOrientation.gpSkel=kd.groundPlaneData.gpVector;
+	calibData.camOrientation.gpSkel=kd.groundPlaneData.gpVector(:, 1)';
 	
 	% Add some fake calibration details
 	calibData.postureCorrection=struct();
@@ -20,6 +20,6 @@ function [kdObj] = FactoryKinectData(matFileName)
 	
 	% Return an object
 	%KinectData(skelData, headerDetails, calibrationDetails)
-	kdObj=KinectData(kd.skelData, dataDetails, calibData)
+	kdObj=KinectData(kd.skelData', dataDetails, calibData);
 
 end

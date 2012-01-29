@@ -13,19 +13,19 @@ classdef KinectData < handle
 		% parameters in order to fuzzify joints for clustering
 		dpw = 0;
 		np = 1;
-		
-		% repitions of the excercise
-		reps = 5;
 
 		% joint to look at for peak detection
 		peakDetectJoint
 		joint_xyz
+		repsGuess
 		
 		% kinect skeleton data
 		skelData
 		% kinect data attributes
 		dateHeader
-        % kinect calibration data
+        % training data class
+		poseEval
+		% kinect calibration data
 		calibData
         
 		% derived features
@@ -60,7 +60,9 @@ classdef KinectData < handle
 			obj.joint_xyz='Y'; %obj.XYZ_IDS.Y;
 
 			% Get the file attributes
-			obj.dateHeader=headerDetails;
+			obj.dateHeader=headerDetails.date;
+			obj.poseEval=headerDetails.poseEval;
+			obj.repsGuess=size(headerDetails.poseEval); obj.repsGuess=obj.repsGuess(1);
 			obj.calibData=calibrationDetails;
 			
 			% Ground plane
@@ -72,17 +74,40 @@ classdef KinectData < handle
 		function peaks = FindPeaks(obj)
 		%	FindPeaks	Wrapper function for poseFinder, includes several
 		%	default values as well as calibration data
-			peaks=obj.poseFinder(obj.peakDetectJoint, obj.joint_xyz, obj.reps, obj.dpw, obj.np);
+			peaks=obj.poseFinder(obj.peakDetectJoint, obj.joint_xyz, obj.repsGuess, obj.dpw, obj.np);
 			obj.peakLocations=peaks;
 		end
 		
 		% Other utils
+		function [poseFeatures, classFeatures] = GetFeatures(obj)
+			numberPoses=length(obj.peakLocations);
+			%allocate outdata
+			poseFeatures=zeros(numberPoses, 15);
+			classFeatures=obj.poseEval(1:numberPoses, :);
+			
+			% Find features at each frame
+			for i = 1:length(obj.peakLocations)
+				findPeak=obj.peakLocations(i);
+				poseFeatures(i,:)=obj.poseFeatures(findPeak);
+			end
+		end
+		
         function features = poseFeatures(obj, frameNumber)
 			features=[...
 				f_hipAngle(obj, frameNumber),...
 				f_kneeAngle(obj, frameNumber), ...
-				f_spineStability(obj, frameNumber) ...
+				f_spineStability(obj, frameNumber), ...
+				f_elbowAngle_L(obj, frameNumber), ...
+				f_elbowAngle_R(obj, frameNumber), ...
+				f_headtilt(obj, frameNumber), ...
+				f_headpitch(obj, frameNumber), ...
+				f_ankleLevel(obj, frameNumber), ...
+				f_handLevel(obj, frameNumber), ...
+				f_hipLevel(obj, frameNumber), ...
+				f_shoulderLevel(obj, frameNumber), ...
+				0,0,0,0 ...
 			];
+		
 			obj.featureVector=features;
         end
 	end
