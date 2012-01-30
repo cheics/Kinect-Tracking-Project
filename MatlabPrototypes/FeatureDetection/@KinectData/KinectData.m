@@ -1,5 +1,5 @@
 classdef KinectData < handle
-	properties
+	properties (Access = protected, Hidden = true)
 		% jnts => sorta enum for simplicity of feature methods
 		jnts = struct(...
 			'HIP_C', 1, 'SPINE', 2, 'SHOULDER_C', 3, 'HEAD', 4,...
@@ -13,24 +13,27 @@ classdef KinectData < handle
 		% parameters in order to fuzzify joints for clustering
 		dpw = 0;
 		np = 1;
-		
-		% repitions of the excercise
-		reps = 5;
 
 		% joint to look at for peak detection
 		peakDetectJoint
 		joint_xyz
+		repsGuess
 		
 		% kinect skeleton data
 		skelData
+		% kinect calibration data
+		calibData
+	end
+	
+	properties (Access = public, Hidden = false)
 		% kinect data attributes
 		dateHeader
-        % kinect calibration data
-		calibData
-        
+        % training data class
+		poseEval
+	      
 		% derived features
 		peakLocations
-		featureVector
+		featureResults
 		groundPlane
 	end
 	
@@ -60,45 +63,37 @@ classdef KinectData < handle
 			obj.joint_xyz='Y'; %obj.XYZ_IDS.Y;
 
 			% Get the file attributes
-			obj.dateHeader=headerDetails;
+			obj.dateHeader=headerDetails.date;
+			obj.poseEval=headerDetails.poseEval;
+			obj.repsGuess=size(headerDetails.poseEval); obj.repsGuess=obj.repsGuess(1);
 			obj.calibData=calibrationDetails;
 			
 			% Ground plane
 			% Hardcoded for debug
 			obj.groundPlane.loc=[0.0664, -0.6309, 2.7400];
 			obj.groundPlane.dir=[0, 1, 0];
-		end
-					
-		function peaks = FindPeaks(obj)
-		%	FindPeaks	Wrapper function for poseFinder, includes several
-		%	default values as well as calibration data
-			peaks=obj.poseFinder(obj.peakDetectJoint, obj.joint_xyz, obj.reps, obj.dpw, obj.np);
-			obj.peakLocations=peaks;
+			
+			obj.featureResults=struct();
 		end
 		
-		% Other utils
-        function features = poseFeatures(obj, frameNumber)
-			features=[...
-				f_hipAngle(obj, frameNumber),...
-				f_kneeAngle(obj, frameNumber), ...
-				f_spineStability(obj, frameNumber) ...
-			];
-			obj.featureVector=features;
-        end
+		% Public Utilities
+		[poseFeatures, classFeatures] = GetFeatures(obj)
+		DebugPose(obj, frameNumber)
+		
 	end
 	
 
     
     % Private utilities
- 	methods (Access = public)
-		% Prototypes
-        peakLocations = poseFinder(obj, joint_xyz, xyz, reps, dpw, np)
-		debugPose(obj, frameNumber)
-      
-        
-        function jointXYZ = getJointData(obj, frameNumber, jointName)
-            jointXYZ=obj.skelData(frameNumber, :, obj.jnts.(jointName));
-        end
+ 	methods (Access = private)
+        %	poseFinder		Finds the likely maximums for data
+		peakLocations = poseFinder(obj, joint_xyz, xyz, reps, dpw, np)
+		%	poseFeatures	Gets Feature Vector for a frame
+		features = poseFeatures(obj, frameNumber)
+		%	findExcercisePeaks		Wrapper function for poseFinder, includes several
+		peaks = findExcercisePeaks(obj)
+		%	getJointData	Get the XYZ data for a joint by name
+		jointXYZ = getJointData(obj, frameNumber, jointName)
     end
         
     % Feature prototypes are private functions
@@ -117,7 +112,6 @@ classdef KinectData < handle
 		handlevel = f_handLevel(obj, frameNumber)
 		hiplevel = f_hipLevel(obj, frameNumber)
 		shoulderlevel = f_shoulderLevel(obj, frameNumber)
-		
 	end
 	
 	methods (Access = private, Static=true)
