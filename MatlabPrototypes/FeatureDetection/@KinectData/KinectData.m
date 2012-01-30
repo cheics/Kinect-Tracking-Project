@@ -1,5 +1,5 @@
 classdef KinectData < handle
-	properties
+	properties (Access = protected, Hidden = true)
 		% jnts => sorta enum for simplicity of feature methods
 		jnts = struct(...
 			'HIP_C', 1, 'SPINE', 2, 'SHOULDER_C', 3, 'HEAD', 4,...
@@ -21,16 +21,19 @@ classdef KinectData < handle
 		
 		% kinect skeleton data
 		skelData
+		% kinect calibration data
+		calibData
+	end
+	
+	properties (Access = public, Hidden = false)
 		% kinect data attributes
 		dateHeader
         % training data class
 		poseEval
-		% kinect calibration data
-		calibData
-        
+	      
 		% derived features
 		peakLocations
-		featureVector
+		featureResults
 		groundPlane
 	end
 	
@@ -69,6 +72,8 @@ classdef KinectData < handle
 			% Hardcoded for debug
 			obj.groundPlane.loc=[0.0664, -0.6309, 2.7400];
 			obj.groundPlane.dir=[0, 1, 0];
+			
+			obj.featureResults=struct();
 		end
 		
 		% Public Utilities
@@ -85,8 +90,8 @@ classdef KinectData < handle
 		peakLocations = poseFinder(obj, joint_xyz, xyz, reps, dpw, np)
 		%	poseFeatures	Gets Feature Vector for a frame
 		features = poseFeatures(obj, frameNumber)
-		%	findPeaks		Wrapper function for poseFinder, includes several
-		peaks = findPeaks(obj)
+		%	findExcercisePeaks		Wrapper function for poseFinder, includes several
+		peaks = findExcercisePeaks(obj)
 		%	getJointData	Get the XYZ data for a joint by name
 		jointXYZ = getJointData(obj, frameNumber, jointName)
     end
