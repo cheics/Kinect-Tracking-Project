@@ -19,20 +19,24 @@ namespace SkeletalViewer
     /// </summary>
     public partial class ExerciseNameDialogBox : Window
     {
-        bool angleSelected = false;
-        bool performanceSelected = false;
-        bool deficiencySelected = false;
-        public string angle;
-        public string performance;
-        public string deficiency;
+        public string file;
+        public string criticalC1;
+        public string criticalC2;
+        public string criticalC3;
         public string index;
-        string trainingPath = @"C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\DataFiles\Experiment3\";
+        string folder;
+        bool passing = true;
         public ExerciseNameDialogBox()
         {
             InitializeComponent();
         }
         private void Ok_Click(object sender, RoutedEventArgs e)
         {
+            file = textBox.Text;
+            criticalC1 = CC1.Text;
+            criticalC2 = CC2.Text;
+            criticalC3 = CC3.Text;
+            index = FileIndex.Content.ToString();
             this.DialogResult = true;
             this.Close();
         }
@@ -42,108 +46,37 @@ namespace SkeletalViewer
             this.Close();
         }
 
-        private void rba1_Checked(object sender, RoutedEventArgs e)
+        internal void passFolder(String datafolder, String exercise, String criticalComp1, String criticalComp2, String criticalComp3)
         {
-            angleSelected = true;
-            angle = "Front";
-            if (performanceSelected & deficiencySelected | performanceSelected & defPar.IsEnabled)
-            {
-                Ok.IsEnabled = true;
-                trainingIndex();
-            }
-        }
-        private void rba2_Checked(object sender, RoutedEventArgs e)
-        {
-            angleSelected = true;
-            angle = "45";
-            if (performanceSelected & deficiencySelected | performanceSelected & defPar.IsEnabled)
-            {
-                Ok.IsEnabled = true;
-                trainingIndex();
-            }
-        }
-        private void rba3_Checked(object sender, RoutedEventArgs e)
-        {
-            angleSelected = true;
-            angle = "Profile";
-            if (performanceSelected & deficiencySelected | performanceSelected & defPar.IsEnabled)
-            {
-                Ok.IsEnabled = true;
-                trainingIndex();
-            }
+            CC1.Text = criticalComp1;
+            CC2.Text = criticalComp2;
+            CC3.Text = criticalComp3;
+            folder = datafolder;
+            //fileName.Content = exercise;
+            textBox.Text = exercise;
+            update();
         }
 
-        private void rbp1_Checked(object sender, RoutedEventArgs e)
+        private void update()
         {
-            performanceSelected = true;
-            performance = "Good";
-            rbd1.IsChecked = false;
-            rbd2.IsChecked = false;
-            deficiency = "";
-            defPar.IsEnabled = false;
-            deficiencySelected = false;
-            if (angleSelected)
+            if (passing)
             {
-                Ok.IsEnabled = true;
-                trainingIndex();
+                return;
             }
-        }
-
-        private void rbp2_Checked(object sender, RoutedEventArgs e)
-        {
-            Ok.IsEnabled = false;
-            FileIndex.Visibility = System.Windows.Visibility.Hidden;
-            performanceSelected = true;
-            performance = "Medium";
-            defPar.IsEnabled = true;
-            if (angleSelected & deficiencySelected)
-            {
-                Ok.IsEnabled = true;
-                trainingIndex();
-            }
-        }
-
-        private void rbp3_Checked(object sender, RoutedEventArgs e)
-        {
-            Ok.IsEnabled = false;
-            FileIndex.Visibility = System.Windows.Visibility.Hidden;
-            performanceSelected = true;
-            performance = "Bad";
-            defPar.IsEnabled = true;
-            if (angleSelected & deficiencySelected)
-            {
-                Ok.IsEnabled = true;
-                trainingIndex();
-            }
-        }
-
-        private void rbd1_Checked(object sender, RoutedEventArgs e)
-        {
-            deficiencySelected = true;
-            deficiency = "Hip";
-            if (angleSelected & deficiencySelected)
-            {
-                Ok.IsEnabled = true;
-                trainingIndex();
-            }
-        }
-
-        private void rbd2_Checked(object sender, RoutedEventArgs e)
-        {
-            deficiencySelected = true;
-            deficiency = "Back";
-            if (angleSelected & deficiencySelected)
-            {
-                Ok.IsEnabled = true;
-                trainingIndex();
-            }
-        }
-
-        private void trainingIndex()
-        {
-            FileIndex.Content = (Directory.GetFiles(trainingPath, angle + performance + deficiency + "*").Length + 1).ToString();
+            FileIndex.Content = (Directory.GetFiles(folder, textBox.Text + CC1.Text + CC2.Text + CC3.Text + "-" + "*.mat").Length + 1).ToString("D4");
             index = FileIndex.Content.ToString();
-            FileIndex.Visibility = System.Windows.Visibility.Visible;
+            fileName.Content = textBox.Text + CC1.Text + CC2.Text + CC3.Text + "-" + index + ".mat";
+            path.Content = folder + @"\" + fileName.Content;
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            update();
+        }
+
+        private void CC_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            update();
         }
 
     }

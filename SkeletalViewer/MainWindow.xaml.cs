@@ -21,6 +21,11 @@ using System.Windows.Media;
 using System.Data;
 using System.IO;
 using System.Media;
+using csmatio.io;
+using csmatio.types;
+using FolderPickerLib;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace SkeletalViewer
 {
@@ -327,247 +332,265 @@ namespace SkeletalViewer
         private int minKinectCount = 1;       //0 - app is "Kinect Enabled". 1 - app "Requires Kinect".
         const int maxKinectCount = 2;
 
-        public void CreateCSVFile(DataTable dt, string strFilePath)
+        //public void CreateCSVFile(DataTable dt, string strFilePath)
+        //{
+
+
+        //    #region Export Grid to CSV
+
+
+
+
+
+        //    // Create the CSV file to which grid data will be exported.
+
+
+        //    StreamWriter sw = new StreamWriter(strFilePath, false);
+
+
+        //    // First we will write the headers.
+
+
+        //    //DataTable dt = m_dsProducts.Tables[0];
+
+
+        //    int iColCount = dt.Columns.Count;
+
+
+        //    for (int i = 0; i < iColCount; i++)
+        //    {
+
+
+        //        sw.Write(dt.Columns[i]);
+
+
+        //        if (i < iColCount - 1)
+        //        {
+
+
+        //            sw.Write(",");
+
+
+        //        }
+
+
+        //    }
+
+
+        //    sw.Write(sw.NewLine);
+
+
+        //    // Now write all the rows.
+
+
+        //    foreach (DataRow dr in dt.Rows)
+        //    {
+
+
+        //        for (int i = 0; i < iColCount; i++)
+        //        {
+
+
+        //            if (!Convert.IsDBNull(dr[i]))
+        //            {
+
+
+        //                sw.Write(dr[i].ToString());
+
+
+        //            }
+
+
+        //            if (i < iColCount - 1)
+        //            {
+
+
+        //                sw.Write(",");
+
+
+        //            }
+
+
+        //        }
+
+
+        //        sw.Write(sw.NewLine);
+
+
+        //    }
+
+
+        //    sw.Close();
+
+
+
+
+
+        //    #endregion
+
+
+        //}
+
+        private MLArray createStruct()
         {
+            MLStructure outStruct = new MLStructure("kinectData", new int[] { 1, 1 });
+            //string[] headers = {"HipCenterX", "HipCenterY", "HipCenterZ", "SpineX", "SpineY", "SpineZ", "ShoulderCenterX", 
+            //                     "ShoulderCenterY", "ShoulderCenterZ", "HeadX", "HeadY", "HeadZ", "ShoulderLeftX", 
+            //                 "ShoulderLeftY", "ShoulderLeftZ", "ElbowLeftX", "ElbowLeftY", "ElbowLeftZ", "WristLeftX", 
+            //                 "WristLeftY", "WristLeftZ", "HandLeftX", "HandLeftY", "HandLeftZ", "ShoulderRightX", 
+            //                 "ShoulderRightY", "ShoulderRightZ", "ElbowRightX", "ElbowRightY", "ElbowRightZ", 
+            //                 "WristRightX", "WristRightY", "WristRightZ", "HandRightX", "HandRightY", "HandRightZ", 
+            //                 "HipLeftX", "HipLeftY", "HipLeftZ", "KneeLeftX", "KneeLeftY", "KneeLeftZ", "AnkleLeftX", 
+            //                 "AnkleLeftY", "AnkleLeftZ", "FootLeftX", "FootLeftY", "FootLeftZ", "HipRightX", "HipRightY", 
+            //                 "HipRightZ", "KneeRightX", "KneeRightY", "KneeRightZ", "AnkleRightX", "AnkleRightY", 
+            //                 "AnkleRightZ", "FootRightX", "FootRightY", "FootRightZ"};
 
+            double criticalC1D = Convert.ToDouble(criticalC1);
+            double criticalC2D = Convert.ToDouble(criticalC2);
+            double criticalC3D = Convert.ToDouble(criticalC3);
 
-            #region Export Grid to CSV
+            double[] ccArray = { criticalC1D, criticalC2D, criticalC3D, criticalC1D, criticalC2D, criticalC3D, criticalC1D, criticalC2D, criticalC3D,
+                                   criticalC1D, criticalC2D, criticalC3D, criticalC1D, criticalC2D, criticalC3D};
 
+            Double[] skelDataA = (Double[])skelData.ToArray(typeof(double));
+            Double[] gpVectorA = (Double[])gpVector.ToArray(typeof(double));
+            Double[] kinectTiltA = (Double[])kinectTilt.ToArray(typeof(double));
 
+            outStruct["skelData", 0] = new MLDouble("", skelDataA, 60);
+            outStruct["dateHeader", 0] = new MLChar("", timeStamp);
+            outStruct["criticalComps", 0] = new MLDouble("", ccArray, 3);
+            outStruct["exercise", 0] = new MLChar("", exercise);
 
+            MLStructure groundStruct = new MLStructure("", new int[] { 1, 1 });
+            groundStruct["height", 0] = new MLDouble("", new double[] { 0.68 }, 1); // metres?
+            groundStruct["gpVector", 0] = new MLDouble("", gpVectorA, 4); //metres?
+            groundStruct["kinectTilt", 0] = new MLDouble("", kinectTiltA, 1); //degrees
+            outStruct["groundPlaneData", 0] = groundStruct;
 
+            return outStruct;
+        }
 
-            // Create the CSV file to which grid data will be exported.
+        private void createMatFile()
+        {
+            List<MLArray> mlList = new List<MLArray>();
+            mlList.Add(createStruct());
 
-
-            StreamWriter sw = new StreamWriter(strFilePath, false);
-
-
-            // First we will write the headers.
-
-
-            //DataTable dt = m_dsProducts.Tables[0];
-
-
-            int iColCount = dt.Columns.Count;
-
-
-            for (int i = 0; i < iColCount; i++)
+            try
             {
-
-
-                sw.Write(dt.Columns[i]);
-
-
-                if (i < iColCount - 1)
-                {
-
-
-                    sw.Write(",");
-
-
-                }
-
-
+                MatFileWriter mfw = new MatFileWriter(folder + @"\" + exercise +criticalC1 + criticalC2 + criticalC3 + "-" + index + ".mat", mlList, true);
             }
-
-
-            sw.Write(sw.NewLine);
-
-
-            // Now write all the rows.
-
-
-            foreach (DataRow dr in dt.Rows)
+            catch (Exception err)
             {
-
-
-                for (int i = 0; i < iColCount; i++)
-                {
-
-
-                    if (!Convert.IsDBNull(dr[i]))
-                    {
-
-
-                        sw.Write(dr[i].ToString());
-
-
-                    }
-
-
-                    if (i < iColCount - 1)
-                    {
-
-
-                        sw.Write(",");
-
-
-                    }
-
-
-                }
-
-
-                sw.Write(sw.NewLine);
-
-
+                Console.WriteLine("shit...");
             }
+        }
 
+        private void startDemo()
+        {
+            // please begin exercise
+            startAudio.PlaySync();
+            return;
+        }
 
-            sw.Close();
+        private void startTraining()
+        {
+            // wait to capture data
+            capture = false;
 
+            // Instantiate the dialog box
+            ExerciseNameDialogBox dlg = new ExerciseNameDialogBox();
 
+            // Configure the dialog box
+            dlg.Owner = this;
 
+            // Pass the folder location
+            dlg.passFolder(folder, exercise, criticalC1, criticalC2, criticalC3);
 
+            // Open the dialog box modally 
+            dlg.ShowDialog();
 
-            #endregion
+            // Process data entered by user if dialog box is accepted
+            if (dlg.DialogResult == true)
+            {
+                // begin capturing
+                capture = true;
+                exercise = dlg.file;
+                criticalC1 = dlg.criticalC1;
+                criticalC2 = dlg.criticalC2;
+                criticalC3 = dlg.criticalC3;
+                index = dlg.index;
+            }
+            return;
+        }
 
-
+        private void endDemo()
+        {
+            // thank you
+            endAudio.PlaySync();
+            return;
         }
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
             if (button1.Content.ToString() == "Start")
             {
-                if (training)
+                if (!path)
                 {
-                    capture = false;
-
-                    // Instantiate the dialog box
-                    ExerciseNameDialogBox dlg = new ExerciseNameDialogBox();
-
-                    // Configure the dialog box
-                    dlg.Owner = this;
-
-                    // Open the dialog box modally 
-                    dlg.ShowDialog();
-
-                    // Process data entered by user if dialog box is accepted
-                    if (dlg.DialogResult == true)
+                    var dlg = new FolderPickerDialog();
+                    if (dlg.ShowDialog() == true)
                     {
-                        capture = true;
-
-                        angle = dlg.angle;
-                        performance = dlg.performance;
-                        deficiency = dlg.deficiency;
-                        index = dlg.index;
+                        folder = dlg.SelectedPath;
+                        path = true;
                     }
                 }
-                if (capture)
+                if (path & training)
                 {
-                    // please begin exercise
-                    startAudio.PlaySync();
+                    startTraining();
+                }
+                else if (path & !training)
+                {
+                    startDemo();
+                }
+                if (path & capture)
+                {
                     button1.Background = Brushes.Red;
                     button1.Content = "End";
                     index1 = KinectDiagnosticViewer.dt1.Rows.Count;
-                    //index2 = KinectDiagnosticViewer.dt2.Rows.Count;
-                    dateTime = DateTime.Now.ToString();
+                    timeStamp = DateTime.Now.ToString();
                 }
             }
             else
             {
-                //caputred1 = KinectDiagnosticViewer.dt1.Select(
-                DataTable dt1 = KinectDiagnosticViewer.dt1.Clone();
-                DataRow dr = dt1.NewRow();
-                dr["HipCenterX"] = dateTime;
-                if (training)
+                index2 = KinectDiagnosticViewer.dt1.Rows.Count;
+                DataTable dt1 = KinectDiagnosticViewer.dt1.Copy();
+                
+                for (int i = (index1 + 1); i < index2-1; i++)
                 {
-                    dr["HipCenterY"] = angle;
-                    dr["HipCenterZ"] = performance;
-                    dr["SpineX"] = deficiency;
-                    dr["SpineY"] = index;
+                    for (int j = 0; j < 60; j++)
+                    {
+                        skelData.Add(dt1.Rows[i][j]);
+                    }
+                    kinectTilt.Add(dt1.Rows[i][60]);
+                    gpVector.Add(dt1.Rows[i][61]);
+                    gpVector.Add(dt1.Rows[i][62]);
+                    gpVector.Add(dt1.Rows[i][63]);
+                    gpVector.Add(dt1.Rows[i][64]);
                 }
-                else
+                if (!training)
                 {
-                    dr["HipCenterY"] = "";
-                    dr["HipCenterZ"] = "";
-                    dr["SpineX"] = "";
-                    dr["SpineY"] = "";
-                }
-                dr["SpineZ"] = "";
-                dr["ShoulderCenterX"] = "";
-                dr["ShoulderCenterY"] = "";
-                dr["ShoulderCenterZ"] = "";
-                dr["HeadX"] = "";
-                dr["HeadY"] = "";
-                dr["HeadZ"] = "";
-                dr["ShoulderLeftX"] = "";
-                dr["ShoulderLeftY"] = "";
-                dr["ShoulderLeftZ"] = "";
-                dr["ElbowLeftX"] = "";
-                dr["ElbowLeftY"] = "";
-                dr["ElbowLeftZ"] = "";
-                dr["WristLeftX"] = "";
-                dr["WristLeftY"] = "";
-                dr["WristLeftZ"] = "";
-                dr["HandLeftX"] = "";
-                dr["HandLeftY"] = "";
-                dr["HandLeftZ"] = "";
-                dr["ShoulderRightX"] = "";
-                dr["ShoulderRightY"] = "";
-                dr["ShoulderRightZ"] = "";
-                dr["ElbowRightX"] = "";
-                dr["ElbowRightY"] = "";
-                dr["ElbowRightZ"] = "";
-                dr["WristRightX"] = "";
-                dr["WristRightY"] = "";
-                dr["WristRightZ"] = "";
-                dr["HandRightX"] = "";
-                dr["HandRightY"] = "";
-                dr["HandRightZ"] = "";
-                dr["HipLeftX"] = "";
-                dr["HipLeftY"] = "";
-                dr["HipLeftZ"] = "";
-                dr["KneeLeftX"] = "";
-                dr["KneeLeftY"] = "";
-                dr["KneeLeftZ"] = "";
-                dr["AnkleLeftX"] = "";
-                dr["AnkleLeftY"] = "";
-                dr["AnkleLeftZ"] = "";
-                dr["FootLeftX"] = "";
-                dr["FootLeftY"] = "";
-                dr["FootLeftZ"] = "";
-                dr["HipRightX"] = "";
-                dr["HipRightY"] = "";
-                dr["HipRightZ"] = "";
-                dr["KneeRightX"] = "";
-                dr["KneeRightY"] = "";
-                dr["KneeRightZ"] = "";
-                dr["AnkleRightX"] = "";
-                dr["AnkleRightY"] = "";
-                dr["AnkleRightZ"] = "";
-                dr["FootRightX"] = "";
-                dr["FootRightY"] = "";
-                dr["FootRightZ"] = "";
-                dt1.Rows.Add(dr);
-                for (int i = (index1 + 1); i < KinectDiagnosticViewer.dt1.Rows.Count; i++)
-                {
-                    dt1.ImportRow(KinectDiagnosticViewer.dt1.Rows[i]);
-                }
-                //DataTable dt2 = KinectDiagnosticViewer.dt2.Clone();
-                //for (int i = (index1 + 1); i <= KinectDiagnosticViewer.dt2.Rows.Count; i++)
-                //{
-                    //dt2.ImportRow(KinectDiagnosticViewer.dt2.Rows[i]);
-                //}
-                // write to csv file
-                if (training)
-                {
-                    CreateCSVFile(dt1, trainingPath + angle + performance + deficiency + index + ".csv");
-                    //CreateCSVFile(dt2, @"C:\Users\Public\Documents\player2.csv");
-                }
-                else
-                {
-                    CreateCSVFile(dt1, demoPath + exerciseFile + ".csv");
-                    //CreateCSVFile(dt2, @"C:\Users\Public\Documents\player2.csv");
+                    endDemo();
                 }
 
-                // thank you
-                endAudio.PlaySync();
-                //this.Close();
+                createMatFile();
+
                 button1.Background = Brushes.Green;
                 button1.Content = "Start";
+
+                skelData.Clear();
+                gpVector.Clear();
+                kinectTilt.Clear();
             }
+            return;
         } //Change to 1 if you only want to view one at a time. Switching will be enabled.
                                       //Each Kinect needs to be in its own USB hub, otherwise it won't have enough USB bandwidth.
                                       //Currently only 1 Kinect per process can have SkeletalTracking working, but color and depth work for all.
@@ -575,18 +598,21 @@ namespace SkeletalViewer
         #endregion Private state
 
         private int index1;
-        //private int index2;
-        private string angle;
-        private string performance;
-        private string deficiency;
-        private string index;
-        private string dateTime;
-        private string exerciseFile = "demo";
-        private bool training = false;
+        private int index2;
+        private string timeStamp;
+        private bool training = true;
         private bool capture = true;
-        public string trainingPath = @"C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\DataFiles\Experiment3\";
-        private string demoPath = @"C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\DataFiles\Demo\";
+        private bool path = false;
+        private string folder = "";
+        private string exercise = "";
+        private string index = "";
+        private string criticalC1 = "0";
+        private string criticalC2 = "0";
+        private string criticalC3 = "0";
         private SoundPlayer startAudio = new SoundPlayer(@"C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\DataFiles\Demo\hi.wav");
         private SoundPlayer endAudio = new SoundPlayer(@"C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\DataFiles\Demo\hi.wav");
+        ArrayList skelData = new ArrayList();
+        ArrayList gpVector = new ArrayList();
+        ArrayList kinectTilt = new ArrayList();
     }
 }

@@ -9,6 +9,7 @@ using System.Windows.Shapes;
 using Microsoft.Research.Kinect.Nui;
 using KinectNui = Microsoft.Research.Kinect.Nui;
 using System.Data;
+using System.Collections;
 
 namespace Microsoft.Samples.Kinect.WpfViewers
 {
@@ -101,14 +102,12 @@ namespace Microsoft.Samples.Kinect.WpfViewers
                              "HipLeftX", "HipLeftY", "HipLeftZ", "KneeLeftX", "KneeLeftY", "KneeLeftZ", "AnkleLeftX", 
                              "AnkleLeftY", "AnkleLeftZ", "FootLeftX", "FootLeftY", "FootLeftZ", "HipRightX", "HipRightY", 
                              "HipRightZ", "KneeRightX", "KneeRightY", "KneeRightZ", "AnkleRightX", "AnkleRightY", 
-                             "AnkleRightZ", "FootRightX", "FootRightY", "FootRightZ"};
+                             "AnkleRightZ", "FootRightX", "FootRightY", "FootRightZ", "Angle", "x", "y", "z", "w"};
 
-            for (int i = 0; i < 60; i++)
+            for (int i = 0; i < 65; i++)
             {
-                DataColumn column1 = new DataColumn(array[i], System.Type.GetType("System.String"));
-                //DataColumn column2 = new DataColumn(array[i], System.Type.GetType("System.Double"));
+                DataColumn column1 = new DataColumn(array[i], System.Type.GetType("System.Double"));
                 dt1.Columns.Add(column1);
-                //dt2.Columns.Add(column2);
             }
         }
         
@@ -178,74 +177,7 @@ namespace Microsoft.Samples.Kinect.WpfViewers
                     }
                     if (trackedSkeleton == 1)
                     {
-                        // use dt1
                         DataRow dr = dt1.NewRow();
-                        dr["HipCenterX"] = array[0].ToString();
-                        dr["HipCenterY"] = array[1].ToString();
-                        dr["HipCenterZ"] = array[2].ToString();
-                        dr["SpineX"] = array[3].ToString();
-                        dr["SpineY"] = array[4].ToString();
-                        dr["SpineZ"] = array[5].ToString();
-                        dr["ShoulderCenterX"] = array[6].ToString();
-                        dr["ShoulderCenterY"] = array[7].ToString();
-                        dr["ShoulderCenterZ"] = array[8].ToString();
-                        dr["HeadX"] = array[9].ToString();
-                        dr["HeadY"] = array[10].ToString();
-                        dr["HeadZ"] = array[11].ToString();
-                        dr["ShoulderLeftX"] = array[12].ToString();
-                        dr["ShoulderLeftY"] = array[13].ToString();
-                        dr["ShoulderLeftZ"] = array[14].ToString();
-                        dr["ElbowLeftX"] = array[15].ToString();
-                        dr["ElbowLeftY"] = array[16].ToString();
-                        dr["ElbowLeftZ"] = array[17].ToString();
-                        dr["WristLeftX"] = array[18].ToString();
-                        dr["WristLeftY"] = array[19].ToString();
-                        dr["WristLeftZ"] = array[20].ToString();
-                        dr["HandLeftX"] = array[21].ToString();
-                        dr["HandLeftY"] = array[22].ToString();
-                        dr["HandLeftZ"] = array[23].ToString();
-                        dr["ShoulderRightX"] = array[24].ToString();
-                        dr["ShoulderRightY"] = array[25].ToString();
-                        dr["ShoulderRightZ"] = array[26].ToString();
-                        dr["ElbowRightX"] = array[27].ToString();
-                        dr["ElbowRightY"] = array[28].ToString();
-                        dr["ElbowRightZ"] = array[29].ToString();
-                        dr["WristRightX"] = array[30].ToString();
-                        dr["WristRightY"] = array[31].ToString();
-                        dr["WristRightZ"] = array[32].ToString();
-                        dr["HandRightX"] = array[33].ToString();
-                        dr["HandRightY"] = array[34].ToString();
-                        dr["HandRightZ"] = array[35].ToString();
-                        dr["HipLeftX"] = array[36].ToString();
-                        dr["HipLeftY"] = array[37].ToString();
-                        dr["HipLeftZ"] = array[38].ToString();
-                        dr["KneeLeftX"] = array[39].ToString();
-                        dr["KneeLeftY"] = array[40].ToString();
-                        dr["KneeLeftZ"] = array[41].ToString();
-                        dr["AnkleLeftX"] = array[42].ToString();
-                        dr["AnkleLeftY"] = array[43].ToString();
-                        dr["AnkleLeftZ"] = array[44].ToString();
-                        dr["FootLeftX"] = array[45].ToString();
-                        dr["FootLeftY"] = array[46].ToString();
-                        dr["FootLeftZ"] = array[47].ToString();
-                        dr["HipRightX"] = array[48].ToString();
-                        dr["HipRightY"] = array[49].ToString();
-                        dr["HipRightZ"] = array[50].ToString();
-                        dr["KneeRightX"] = array[51].ToString();
-                        dr["KneeRightY"] = array[52].ToString();
-                        dr["KneeRightZ"] = array[53].ToString();
-                        dr["AnkleRightX"] = array[54].ToString();
-                        dr["AnkleRightY"] = array[55].ToString();
-                        dr["AnkleRightZ"] = array[56].ToString();
-                        dr["FootRightX"] = array[57].ToString();
-                        dr["FootRightY"] = array[58].ToString();
-                        dr["FootRightZ"] = array[59].ToString();
-                        dt1.Rows.Add(dr);
-                    }
-                    /*else
-                    {
-                        // use dt2
-                        DataRow dr = dt2.NewRow();
                         dr["HipCenterX"] = array[0];
                         dr["HipCenterY"] = array[1];
                         dr["HipCenterZ"] = array[2];
@@ -306,8 +238,13 @@ namespace Microsoft.Samples.Kinect.WpfViewers
                         dr["FootRightX"] = array[57];
                         dr["FootRightY"] = array[58];
                         dr["FootRightZ"] = array[59];
-                        dt2.Rows.Add(dr);
-                    }*/
+                        dr["Angle"] = _Kinect.NuiCamera.ElevationAngle;
+                        dr["x"] = skeletonFrame.FloorClipPlane.X;
+                        dr["y"] = skeletonFrame.FloorClipPlane.Y;
+                        dr["z"] = skeletonFrame.FloorClipPlane.Z;
+                        dr["w"] = skeletonFrame.FloorClipPlane.W;
+                        dt1.Rows.Add(dr);
+                    }
                     trackedSkeleton++;
                 }
                 iSkeleton++;
@@ -373,6 +310,5 @@ namespace Microsoft.Samples.Kinect.WpfViewers
         #endregion Private State
 
         public static DataTable dt1 = new DataTable();
-        //public static DataTable dt2 = new DataTable();
     }
 }

@@ -32,6 +32,12 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="csmatio">
+      <HintPath>..\CSMatIO\src\bin\Debug\csmatio.dll</HintPath>
+    </Reference>
+    <Reference Include="FolderPickerLib">
+      <HintPath>..\FolderPickerLib\FolderPickerLib.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Research.Kinect">
       <HintPath>$(KINECTSDK_DIR)\Assemblies\Microsoft.Research.Kinect.dll</HintPath>
     </Reference>
