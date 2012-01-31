@@ -2,13 +2,13 @@ function [poseFeatures, poseClass] = GetFeatures(obj)
 	% Find some peaks
 	obj.findExcercisePeaks();
 
-	numberPoses=length(obj.peakLocations);
+	numberPoses=min(length(obj.peakLocations), length(obj.poseEval));
 	%allocate outdata
 	poseFeatures=zeros(numberPoses, 15);
 	poseClass=obj.poseEval(1:numberPoses, :);
 
 	% Find features at each frame
-	for i = 1:length(obj.peakLocations)
+	for i = 1:numberPoses
 		findPeak=obj.peakLocations(i);
 		poseFeatures(i,:)=obj.poseFeatures(findPeak);
 	end

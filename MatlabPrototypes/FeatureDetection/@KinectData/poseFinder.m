@@ -1,4 +1,4 @@
-function [ peakLocations ] = poseFinder(obj, jointLook, xyz, reps, dpw, np)
+function [ peakLocations ] = poseFinder(obj, jointLook, xyz, reps, dpw, np, findMin)
 %poseFinder Summary of this function goes here
 %   jointLook:   The joint ID to look at
 %   reps:    Maximum number of reps to look for
@@ -7,6 +7,10 @@ function [ peakLocations ] = poseFinder(obj, jointLook, xyz, reps, dpw, np)
 %               extra window value to keep for processing
     
     rawDataIn=obj.skelData(:, obj.XYZ_IDS.(xyz), obj.jnts.(jointLook));
+	if findMin==true
+		rawDataIn=(min(rawDataIn)+rawDataIn)*-1;
+	end
+	
     fc = 0.5; % Cut-off frequency (Hz)
     fs = 20; % Sampling rate (Hz)
     order = 3; % Filter order
@@ -18,19 +22,6 @@ function [ peakLocations ] = poseFinder(obj, jointLook, xyz, reps, dpw, np)
         'MINPEAKDISTANCE', round(size(lpf_dataIn, 1)./(reps*1.5)), ...
         'NPEAKS', reps+1);
  
-% Peak debuging code BEGIN
-%     hold on;
-%     plot(1:size(x, 1), x, 'k','LineWidth', 3);
-%     plot(1:size(x, 1), y, 'b', 'LineWidth', 4);
-%     plot(loc, pks, 'ro', 'MarkerSize', 10, 'LineWidth', 2);
-%     hold off;
-%     pause;
-%     numPeaks=size(loc, 1);
-%     for n = 1:numPeaks
-%         debugPose(reshape(dataIn(loc(n), :), 3, 20)');
-%         pause
-%
-
     if dpw ~= 0
         %Making shaky sampling window
         samples=round(dpw*np);

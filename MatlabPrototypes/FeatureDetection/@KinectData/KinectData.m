@@ -59,7 +59,7 @@ classdef KinectData < handle
 			obj.skelData=reshape(skelData, [timeSteps 3 20]);
 
 			% Default peak detection joint
-			obj.peakDetectJoint='KNEE_R'; %obj.jnts.KNEE_R;
+			obj.peakDetectJoint='HIP_C'; %obj.jnts.KNEE_R;
 			obj.joint_xyz='Y'; %obj.XYZ_IDS.Y;
 
 			% Get the file attributes
@@ -87,7 +87,7 @@ classdef KinectData < handle
     % Private utilities
  	methods (Access = private)
         %	poseFinder		Finds the likely maximums for data
-		peakLocations = poseFinder(obj, joint_xyz, xyz, reps, dpw, np)
+		peakLocations = poseFinder(obj, joint_xyz, xyz, reps, dpw, np, findMin)
 		%	poseFeatures	Gets Feature Vector for a frame
 		features = poseFeatures(obj, frameNumber)
 		%	findExcercisePeaks		Wrapper function for poseFinder, includes several
