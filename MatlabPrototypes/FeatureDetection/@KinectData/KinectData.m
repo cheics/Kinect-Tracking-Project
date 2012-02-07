@@ -26,6 +26,8 @@ classdef KinectData < handle
 		
 		% peakDebugData
 		peakDebug
+		% debugDimensions
+		debugDimensions
 	end
 	
 	properties (Access = public, Hidden = false)
@@ -78,13 +80,14 @@ classdef KinectData < handle
 			
 			obj.featureResults=struct();
 			obj.peakDebug=struct();
+			obj.debugDimensions=struct();
 		end
 		
 		% Public Utilities
 		[poseFeatures, classFeatures] = GetFeatures(obj)
 		DebugPose(obj, frameNumber)
 		DebugPeaks(obj, varargin)
-		DebugAll(obj)
+		DebugAll(obj, varargin)
 	end
 	
 
