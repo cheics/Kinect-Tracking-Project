@@ -1,4 +1,5 @@
-load('FeatureDetection/trainingData.mat');
+%load('FeatureDetection/trainingData_skeletonKin.mat');
+load('FeatureDetection/trainingData_trig.mat');
 labels  = trainingData.classes;
 data = trainingData.features;
 
