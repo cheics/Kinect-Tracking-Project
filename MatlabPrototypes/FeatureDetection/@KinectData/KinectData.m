@@ -23,6 +23,9 @@ classdef KinectData < handle
 		skelData
 		% kinect calibration data
 		calibData
+		
+		% peakDebugData
+		peakDebug
 	end
 	
 	properties (Access = public, Hidden = false)
@@ -74,12 +77,14 @@ classdef KinectData < handle
 			obj.groundPlane.dir=[0, 1, 0];
 			
 			obj.featureResults=struct();
+			obj.peakDebug=struct();
 		end
 		
 		% Public Utilities
 		[poseFeatures, classFeatures] = GetFeatures(obj)
 		DebugPose(obj, frameNumber)
-		
+		DebugPeaks(obj, varargin)
+		DebugAll(obj)
 	end
 	
 
@@ -87,7 +92,7 @@ classdef KinectData < handle
     % Private utilities
  	methods (Access = private)
         %	poseFinder		Finds the likely maximums for data
-		peakLocations = poseFinder(obj, joint_xyz, xyz, reps, dpw, np, findMin)
+		[peakLocations, rawDataIn, lpf_dataIn] = poseFinder(obj, joint_xyz, xyz, reps, dpw, np, findMin)
 		%	poseFeatures	Gets Feature Vector for a frame
 		features = poseFeatures(obj, frameNumber)
 		%	findExcercisePeaks		Wrapper function for poseFinder, includes several

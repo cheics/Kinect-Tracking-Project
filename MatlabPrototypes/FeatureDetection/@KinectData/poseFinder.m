@@ -1,4 +1,4 @@
-function [ peakLocations ] = poseFinder(obj, jointLook, xyz, reps, dpw, np, findMin)
+function [peakLocations, rawDataIn, lpf_dataIn] = poseFinder(obj, jointLook, xyz, reps, dpw, np, findMin)
 %poseFinder Summary of this function goes here
 %   jointLook:   The joint ID to look at
 %   reps:    Maximum number of reps to look for
@@ -7,8 +7,9 @@ function [ peakLocations ] = poseFinder(obj, jointLook, xyz, reps, dpw, np, find
 %               extra window value to keep for processing
     
     rawDataIn=obj.skelData(:, obj.XYZ_IDS.(xyz), obj.jnts.(jointLook));
+	minima_offset=min(rawDataIn);
 	if findMin==true
-		rawDataIn=(min(rawDataIn)+rawDataIn)*-1;
+		rawDataIn=(rawDataIn-minima_offset)*-1;
 	end
 	
     fc = 0.5; % Cut-off frequency (Hz)
@@ -41,7 +42,12 @@ function [ peakLocations ] = poseFinder(obj, jointLook, xyz, reps, dpw, np, find
             1, size(peakColumns, 1)*size(peakColumns, 2)));
     else
         peakLocations=loc;
-    end
+	end
+	
+	if findMin==true
+		rawDataIn=(rawDataIn*-1)+minima_offset;
+		lpf_dataIn=(lpf_dataIn*-1)+minima_offset;
+	end
     
     
 end
