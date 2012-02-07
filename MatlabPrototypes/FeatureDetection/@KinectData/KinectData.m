@@ -1,5 +1,6 @@
 classdef KinectData < handle
-	properties (Access = protected, Hidden = true)
+%	properties (Access = protected, Hidden = true)
+	properties (Access = public, Hidden = false)
 		% jnts => sorta enum for simplicity of feature methods
 		jnts = struct(...
 			'HIP_C', 1, 'SPINE', 2, 'SHOULDER_C', 3, 'HEAD', 4,...
@@ -73,10 +74,10 @@ classdef KinectData < handle
 			obj.repsGuess=size(headerDetails.poseEval); obj.repsGuess=obj.repsGuess(1);
 			obj.calibData=calibrationDetails;
 			
-			% Ground plane
-			% Hardcoded for debug
-			obj.groundPlane.loc=[0.0664, -0.6309, 2.7400];
-			obj.groundPlane.dir=[0, 1, 0];
+			% Method 1 uses skel data
+			% Method 2 uses trig
+			obj.calibrateCamera(1);
+			
 			
 			obj.featureResults=struct();
 			obj.peakDebug=struct();
@@ -102,6 +103,8 @@ classdef KinectData < handle
 		peaks = findExcercisePeaks(obj)
 		%	getJointData	Get the XYZ data for a joint by name
 		jointXYZ = getJointData(obj, frameNumber, jointName)
+		%	calibrateCamera	Calibrates the ground plane
+		calibrateCamera(obj,methodNumber)
     end
         
     % Feature prototypes are private functions
