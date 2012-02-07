@@ -1,8 +1,18 @@
-labels  = poseFeatures.classifierData;
-data = poseFeatures.featureData;
-data = data(:,1:11);
+load('FeatureDetection/trainingData.mat');
+labels  = trainingData.classes;
+data = trainingData.features;
 
-datasize = size (data);
+% Automatically sizes data
+datasize = size(data);
+dataHere=[];
+for i=1:datasize(2)
+	if length(unique(data(:,i))) > 2
+		dataHere=[dataHere, i];
+	end
+end
+data = data(:,dataHere);
+datasize = size(data);
+
 
 ICD = zeros (datasize(2),3,3);
 
@@ -39,20 +49,23 @@ for i = 1 : 3
     
 end 
 
+figure();
+critComps=cell(3,1);
+critComps{1}='SquatDepth';
+critComps{2}='StraightBack';
+critComps{3}='Balance';
+
 for g = 1 : 3
-    
-    figure(g);
     vizualICD = zeros(datasize(2)*3,2);
     vizualICD (:,2) = nonzeros(ICD(:,:,g));
     k = 1;
-    for i = 1 : 3
-
-        for j = 1 : datasize(2)
-
-            vizualICD(k,1) = j;
-            k = k + 1;
-        end
-
-    end
-    plot(vizualICD(:,1),vizualICD(:,2),'*b');
+	for i = 1:3
+		for j = 1 : datasize(2)
+			vizualICD(k,1) = j;
+			k = k + 1;
+		end
+	end
+	subplot(3,1,g);
+	plot(vizualICD(:,1),vizualICD(:,2),'*b');
+	title(critComps{g});
 end
