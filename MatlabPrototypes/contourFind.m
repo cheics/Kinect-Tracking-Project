@@ -1,20 +1,50 @@
-critComp=1;
-useFeatures=[2,4,5];
+function contourFind(dataIn, critComp, useFeatures)
 
+mapPower=1.5;
+nContour=30;
 
-% gridSize=0.5;
-% xVec=round(min(trainingData.features(:,2))):gridSize:round(max(trainingData.features(:,2)));
-% yVec=round(min(trainingData.features(:,4))):gridSize:round(max(trainingData.features(:,4)));
-% 
-% 
-% F = TriScatteredInterp(trainingData.features(:,2), trainingData.features(:,4), trainingData.features(:,5), 'natural');
-% [qx,qy] = meshgrid(xVec,yVec);
-% qz = F(qx,qy);
-%contour(qx,qy,qz);
-%hold on
-
-critCompScore=trainingData.classes(:,critComp);
+critCompScore=dataIn.classes(:,critComp);
 i2=find(critCompScore==2); i1=find(critCompScore==1); i0=find(critCompScore==0);
-plot3(trainingData.features(i2,useFeatures(1)), trainingData.features(i2,useFeatures(2)), trainingData.features(i2,useFeatures(3)), 'g.',...
-	trainingData.features(i1,useFeatures(1)), trainingData.features(i1,useFeatures(2)), trainingData.features(i1,useFeatures(3)),'b.',...
-	trainingData.features(i0,useFeatures(1)), trainingData.features(i0,useFeatures(2)), trainingData.features(i0,useFeatures(3)),'r.')
+
+figure;
+plot3(dataIn.features(i2,useFeatures(1)), dataIn.features(i2,useFeatures(2)), dataIn.features(i2,useFeatures(3)), 'g.',...
+	dataIn.features(i1,useFeatures(1)), dataIn.features(i1,useFeatures(2)), dataIn.features(i1,useFeatures(3)),'b.',...
+	dataIn.features(i0,useFeatures(1)), dataIn.features(i0,useFeatures(2)), dataIn.features(i0,useFeatures(3)),'r.')
+
+
+%% Graph KDEs of each cluster
+
+[bandwidth2,density2,X2,Y2]=kde2d( ...
+	[dataIn.features(i2,useFeatures(1)),...
+	dataIn.features(i2,useFeatures(2))] ...
+);
+[bandwidth1,density1,X1,Y1]=kde2d( ...
+	[dataIn.features(i1,useFeatures(1)),...
+	dataIn.features(i1,useFeatures(2))] ...
+);
+[bandwidth0,density0,X0,Y0]=kde2d( ...
+	[dataIn.features(i0,useFeatures(1)),...
+	dataIn.features(i0,useFeatures(2))] ...
+);
+
+xx=[min(min([X2,X1,X0])), max(max([X2,X1,X0]))];
+yy=[min(min([Y2,Y1,Y0])), max(max([Y2,Y1,Y0]))];
+
+figure;
+contourf(X2,Y2,density2,nContour);
+colormap (c_colourMap('green').^mapPower);
+xlim(xx); ylim(yy);
+shading flat;
+
+figure;
+contourf(X1,Y1,density1,nContour);
+colormap (c_colourMap('blue').^mapPower);
+xlim(xx); ylim(yy);
+shading flat;
+
+figure;
+contourf(X0,Y0,density0,nContour);
+colormap (c_colourMap('red').^mapPower);
+xlim(xx); ylim(yy);
+shading flat;
+end
