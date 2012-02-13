@@ -87,6 +87,7 @@ classdef KinectData < handle
 		% Public Utilities
 		[poseFeatures, classFeatures] = GetFeatures(obj)
 		DebugPose(obj, frameNumber)
+		DebugPoseShowFeature(obj, frameNumber, highlightVector)
 		DebugPeaks(obj, varargin)
 		DebugAll(obj, varargin)
 	end
