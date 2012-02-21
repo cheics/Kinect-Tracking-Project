@@ -54,11 +54,7 @@ namespace SkeletalViewer
             folder = datafolder;
             //fileName.Content = exercise;
             textBox.Text = exercise;
-<<<<<<< HEAD
             passing = false;
-=======
-			passing = false;
->>>>>>> a400abbadff5b1d70fea3157351569af47658bd2
             update();
         }
 
