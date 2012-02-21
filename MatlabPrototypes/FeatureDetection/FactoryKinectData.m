@@ -4,7 +4,7 @@ function [kdObj] = FactoryKinectData(matFileName)
 	% Extract the header data
 	dataDetails=struct();
 	dataDetails.date=kd.dateHeader;
-	dataDetails.poseEval=kd.poseEval;
+	dataDetails.poseEval=kd.criticalComps';
 	
 	% Extract the calibration data
 	calibData=struct();

@@ -1,5 +1,6 @@
 classdef KinectData < handle
-	properties (Access = protected, Hidden = true)
+%	properties (Access = protected, Hidden = true)
+	properties (Access = public, Hidden = false)
 		% jnts => sorta enum for simplicity of feature methods
 		jnts = struct(...
 			'HIP_C', 1, 'SPINE', 2, 'SHOULDER_C', 3, 'HEAD', 4,...
@@ -23,6 +24,11 @@ classdef KinectData < handle
 		skelData
 		% kinect calibration data
 		calibData
+		
+		% peakDebugData
+		peakDebug
+		% debugDimensions
+		debugDimensions
 	end
 	
 	properties (Access = public, Hidden = false)
@@ -59,7 +65,7 @@ classdef KinectData < handle
 			obj.skelData=reshape(skelData, [timeSteps 3 20]);
 
 			% Default peak detection joint
-			obj.peakDetectJoint='KNEE_R'; %obj.jnts.KNEE_R;
+			obj.peakDetectJoint='HIP_C'; %obj.jnts.KNEE_R;
 			obj.joint_xyz='Y'; %obj.XYZ_IDS.Y;
 
 			% Get the file attributes
@@ -68,18 +74,22 @@ classdef KinectData < handle
 			obj.repsGuess=size(headerDetails.poseEval); obj.repsGuess=obj.repsGuess(1);
 			obj.calibData=calibrationDetails;
 			
-			% Ground plane
-			% Hardcoded for debug
-			obj.groundPlane.loc=[0.0664, -0.6309, 2.7400];
-			obj.groundPlane.dir=[0, 1, 0];
+			% Method 1 uses skel data
+			% Method 2 uses trig
+			obj.calibrateCamera(1);
+			
 			
 			obj.featureResults=struct();
+			obj.peakDebug=struct();
+			obj.debugDimensions=struct();
 		end
 		
 		% Public Utilities
 		[poseFeatures, classFeatures] = GetFeatures(obj)
 		DebugPose(obj, frameNumber)
-		
+		DebugPoseShowFeature(obj, frameNumber, highlightVector)
+		DebugPeaks(obj, varargin)
+		DebugAll(obj, varargin)
 	end
 	
 
@@ -87,13 +97,15 @@ classdef KinectData < handle
     % Private utilities
  	methods (Access = private)
         %	poseFinder		Finds the likely maximums for data
-		peakLocations = poseFinder(obj, joint_xyz, xyz, reps, dpw, np)
+		[peakLocations, rawDataIn, lpf_dataIn] = poseFinder(obj, joint_xyz, xyz, reps, dpw, np, findMin)
 		%	poseFeatures	Gets Feature Vector for a frame
 		features = poseFeatures(obj, frameNumber)
 		%	findExcercisePeaks		Wrapper function for poseFinder, includes several
 		peaks = findExcercisePeaks(obj)
 		%	getJointData	Get the XYZ data for a joint by name
 		jointXYZ = getJointData(obj, frameNumber, jointName)
+		%	calibrateCamera	Calibrates the ground plane
+		calibrateCamera(obj,methodNumber)
     end
         
     % Feature prototypes are private functions

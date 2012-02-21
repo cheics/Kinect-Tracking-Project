@@ -45,4 +45,19 @@ function DebugPose(obj, frameNumber)
 		head_spine_hips(:, gx), head_spine_hips(:, gy), head_spine_hips(:, gz), '-s' ...
 	);
     axis equal;
+	
+	slack=0.2;
+	slackVec=[-slack, slack];
+	if isfield(obj.debugDimensions, 'X') == 0
+		obj.debugDimensions.X=get(gca,'XLim');
+		obj.debugDimensions.Y=get(gca,'YLim');
+		obj.debugDimensions.Z=get(gca,'ZLim');
+		obj.debugDimensions.X=obj.debugDimensions.X+slackVec;
+		obj.debugDimensions.Y=obj.debugDimensions.Y+slackVec;
+	end
+		set(gca,'XLim', obj.debugDimensions.X);
+		set(gca,'YLim', obj.debugDimensions.Y);
+		set(gca,'ZLim', obj.debugDimensions.Z);
+
+			
 end
