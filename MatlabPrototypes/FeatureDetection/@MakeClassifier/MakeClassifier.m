@@ -11,9 +11,9 @@ classdef MakeClassifier < handle
 			
 		%% Case statements in order to choose the classifier
 			if strcmp(typeClassifier, 'GED')
-				obj.theClassifier.critComp1=Classifier_GED('CC1_squatDepth');
-				obj.theClassifier.critComp2=Classifier_GED('CC2_straightBack');
-				obj.theClassifier.critComp3=Classifier_GED('CC3_squatBal');
+				obj.theClassifier.critComp1=Classifier_GED('CC1-squatDepth');
+				obj.theClassifier.critComp2=Classifier_GED('CC2-straightBack');
+				obj.theClassifier.critComp3=Classifier_GED('CC3-squatBal');
 			else
 				err = MException('ResultChk:BadInput', ...
 					'Classifier type %s is not valid, must be one of {%s}',...
@@ -25,9 +25,7 @@ classdef MakeClassifier < handle
 			
 		%% Can also load existing
 			if loadFromFile == true
-				obj.theClassifier.critComp1.loadClassifer();
-				obj.theClassifier.critComp2.loadClassifer();
-				obj.theClassifier.critComp3.loadClassifer();
+				obj.loadClassifier()
 			end
 				
 		end
@@ -42,15 +40,15 @@ classdef MakeClassifier < handle
 		end
 		
 		function saveClassifier(obj)
-			obj.theClassifier.critComp1.saveClassifer();
-			obj.theClassifier.critComp2.saveClassifer();
-			obj.theClassifier.critComp3.saveClassifer();
+			obj.theClassifier.critComp1.saveClassifier();
+			obj.theClassifier.critComp2.saveClassifier();
+			obj.theClassifier.critComp3.saveClassifier();
 		end
 		
 		function loadClassifier(obj)
-			obj.theClassifier.critComp1.loadClassifer();
-			obj.theClassifier.critComp2.loadClassifer();
-			obj.theClassifier.critComp3.loadClassifer();
+			obj.theClassifier.critComp1.loadClassifier();
+			obj.theClassifier.critComp2.loadClassifier();
+			obj.theClassifier.critComp3.loadClassifier();
 		end
 
 		function [c1,c2,c3] = classify(obj, testPoint)
