@@ -3,14 +3,16 @@ classdef Classifier_GED < handle
 	properties (Access = public, Hidden = false)
 		classMeans
 		classCov
-		classifierName
+		filenameOut
 	end
 	
 	methods
 		function obj = Classifier_GED(classifierName)
 				obj.classMeans=struct();
 				obj.classCov=struct();
-				obj.classifierName=classifierName;
+				obj.filenameOut=fullfile('SavedClassifiers', ...
+					sprintf('%s_%s.mat', 'GED_Classifier', classifierName)...
+				);
 		end
 		
 		function createClassifier(obj, tData, cData)		
@@ -45,9 +47,16 @@ classdef Classifier_GED < handle
 		end
 		
 		function saveClassifier(obj)
+			GED_classifier=struct();
+			GED_classifier.classMeans=obj.classMeans;
+			GED_classifier.classCov=obj.classCov;
+			save(obj.filenameOut, 'GED_classifier');
 		end
 		
 		function loadClassifier(obj)
+			load(obj.filenameOut);
+			obj.classMeans=GED_classifier.classMeans;
+			obj.classCov=GED_classifier.classCov;
 		end
 
 	end
