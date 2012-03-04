@@ -1,51 +1,36 @@
-classdef Classifier_GED < handle
+classdef Classifier_GED < Classifier_BASE
 
 	properties (Access = public, Hidden = false)
 		classMeans
 		classCov
-		filenameOut
-		featureSize
 	end
 	
 	methods
 		function obj = Classifier_GED(classifierName)
+				obj@Classifier_BASE(classifierName);
+				obj.classifierType='GED';
+				%% Params that define the classifier
 				obj.classMeans=struct();
 				obj.classCov=struct();
-				obj.featureSize=0; %% Until trained
-				obj.filenameOut=fullfile('SavedClassifiers', ...
-					sprintf('%s_%s.mat', 'GED', classifierName)...
-				);
 		end
 		
-		function createClassifier(obj, tData, cData, featureSize)
+		function trainClassifier(obj, tData, cData, featureSize)
 			obj.featureSize=featureSize;
 			%% Using Logical indexing for speed
-			score2_ind= cData == 2;
-			score1_ind= cData == 1;
-			score0_ind= cData == 0;
-					
-			dataSet2=tData(score2_ind,:);
-			dataSet1=tData(score1_ind,:);
-			dataSet0=tData(score0_ind,:);
+			[ds2,ds1,ds0]=obj.splitTrainingData(tData, cData);
 			
-			obj.classMeans.score2=mean(dataSet2);
-			obj.classMeans.score1=mean(dataSet1);
-			obj.classMeans.score0=mean(dataSet0);
+			obj.classMeans.score2=mean(ds2);
+			obj.classMeans.score1=mean(ds1);
+			obj.classMeans.score0=mean(ds0);
 			
-			obj.classCov.score2=cov(dataSet2);
-			obj.classCov.score1=cov(dataSet1);
-			obj.classCov.score0=cov(dataSet0);			
+			obj.classCov.score2=cov(ds2);
+			obj.classCov.score1=cov(ds1);
+			obj.classCov.score0=cov(ds0);			
 		end
 		
 		function outClass=classify(obj, testPoint)
-			if size(testPoint, 2) ~= obj.featureSize
-				err = MException('ResultChk:BadInput', ...
-					'Classifier operates on feature vector of size %i, not feature vector of size %i',...
-					obj.featureSize, ...
-					size(testPoint, 2) ...
-				);
-				throw(err)
-			end
+			obj.featureSizeCheck(testPoint); % Ensure sizes
+
 		    d2 = obj.getGedDist(obj.classMeans.score2, obj.classCov.score2, testPoint);
 			d1 = obj.getGedDist(obj.classMeans.score1, obj.classCov.score1, testPoint);
 			d0 = obj.getGedDist(obj.classMeans.score1, obj.classCov.score1, testPoint);
@@ -57,21 +42,6 @@ classdef Classifier_GED < handle
 			gedDist=(mean-testpoint) *  (inv(covar))  * transpose(mean-testpoint);
 		end
 		
-		function saveClassifier(obj)
-			GED_classifier=struct();
-			GED_classifier.featureSize=obj.featureSize;
-			GED_classifier.classMeans=obj.classMeans;
-			GED_classifier.classCov=obj.classCov;
-			save(obj.filenameOut, 'GED_classifier');
-		end
-		
-		function loadClassifier(obj)
-			load(obj.filenameOut);
-			obj.classMeans=GED_classifier.classMeans;
-			obj.classCov=GED_classifier.classCov;
-			obj.featureSize=GED_classifier.featureSize;
-		end
-
 	end
 	
 
