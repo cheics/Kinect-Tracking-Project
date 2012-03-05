@@ -25,6 +25,10 @@ classdef MakeClassifier < handle
                 obj.theClassifier.critComp1=Classifier_BAYES('CC1-squatDepth');
 				obj.theClassifier.critComp2=Classifier_BAYES('CC2-straightBack');
 				obj.theClassifier.critComp3=Classifier_BAYES('CC3-squatBal');
+			elseif strcmp(typeClassifier, 'SVM')
+                obj.theClassifier.critComp1=Classifier_SVM('CC1-squatDepth');
+				obj.theClassifier.critComp2=Classifier_SVM('CC2-straightBack');
+				obj.theClassifier.critComp3=Classifier_SVM('CC3-squatBal');
             else
 				err = MException('ResultChk:BadInput', ...
 					'Classifier type %s is not valid, must be one of {%s}',...
