@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="CSharp_MATLAB">
+</Property><Property Name="Solution File" Value="C:\Users\cheics\Documents\Visual Studio 2010\Projects\CSharp_MATLAB\CSharp_MATLAB.sln">
+</Property><Property Name="User Options File" Value="C:\Users\cheics\Documents\Visual Studio 2010\Projects\CSharp_MATLAB\CSharp_MATLAB.suo">
+</Property><Property Name="Date" Value="Monday, March 05, 2012">
+</Property><Property Name="Time" Value="12:16 PM">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="CSharp_MATLAB.sln" Description="File successfully backed up as C:\Users\cheics\Documents\Visual Studio 2010\Projects\CSharp_MATLAB\Backup\CSharp_MATLAB.sln">
+</Event><Event ErrorLevel="0" Project="" Source="CSharp_MATLAB.suo" Description="File successfully backed up as C:\Users\cheics\Documents\Visual Studio 2010\Projects\CSharp_MATLAB\Backup\CSharp_MATLAB.suo">
+</Event><Event ErrorLevel="0" Project="CSharp_MATLAB" Source="VSProj\CSharp_MATLAB.csproj" Description="Project file successfully backed up as C:\Users\cheics\Documents\Visual Studio 2010\Projects\CSharp_MATLAB\Backup\VSProj\CSharp_MATLAB.csproj">
+</Event><Event ErrorLevel="0" Project="CSharp_MATLAB" Source="VSProj\CSharp_MATLAB.csproj.user" Description="Project user file successfully backed up as C:\Users\cheics\Documents\Visual Studio 2010\Projects\CSharp_MATLAB\Backup\VSProj\CSharp_MATLAB.csproj.user">
+</Event><Event ErrorLevel="0" Project="CSharp_MATLAB" Source="VSProj\Program.cs" Description="File successfully backed up as C:\Users\cheics\Documents\Visual Studio 2010\Projects\CSharp_MATLAB\Backup\VSProj\Program.cs">
+</Event><Event ErrorLevel="0" Project="CSharp_MATLAB" Source="VSProj\Properties\AssemblyInfo.cs" Description="File successfully backed up as C:\Users\cheics\Documents\Visual Studio 2010\Projects\CSharp_MATLAB\Backup\VSProj\Properties\AssemblyInfo.cs">
+</Event><Event ErrorLevel="1" Project="CSharp_MATLAB" Source="VSProj\CSharp_MATLAB.csproj" Description="Your project is targeting .NET Framework 2.0 or 3.0. If your project uses assemblies requiring a newer .NET Framework, your project will fail to build. You can change the .NET Framework version by clicking Properties on the project menu and then selecting a new version in the '.NET Framework' dropdown box. (In Visual Basic, this is located on the Compile tab by clicking the 'Advanced Compiler Options...' button.)">
+</Event><Event ErrorLevel="0" Project="CSharp_MATLAB" Source="VSProj\CSharp_MATLAB.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="CSharp_MATLAB" Source="VSProj\CSharp_MATLAB.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="CSharp_MATLAB.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="CSharp_MATLAB.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="CSharp_MATLAB" Source="VSProj\CSharp_MATLAB.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event></UpgradeLog>

@@ -1,4 +1,4 @@
-function [peakLocations, rawDataIn, lpf_dataIn] = poseFinder(obj, jointLook, xyz, reps, dpw, np, findMin)
+function [peakLocations, rawDataIn, lpf_dataIn] = poseFinder(obj, jointLook, xyz, reps, dpw, np, findMax)
 %poseFinder Summary of this function goes here
 %   jointLook:   The joint ID to look at
 %   reps:    Maximum number of reps to look for
@@ -8,7 +8,7 @@ function [peakLocations, rawDataIn, lpf_dataIn] = poseFinder(obj, jointLook, xyz
     
     rawDataIn=obj.skelData(:, obj.XYZ_IDS.(xyz), obj.jnts.(jointLook));
 	minima_offset=min(rawDataIn);
-	if findMin==true
+	if findMax==false
 		rawDataIn=(rawDataIn-minima_offset)*-1;
 	end
 	
@@ -44,7 +44,7 @@ function [peakLocations, rawDataIn, lpf_dataIn] = poseFinder(obj, jointLook, xyz
         peakLocations=loc;
 	end
 	
-	if findMin==true
+	if findMax==false
 		rawDataIn=(rawDataIn*-1)+minima_offset;
 		lpf_dataIn=(lpf_dataIn*-1)+minima_offset;
 	end
