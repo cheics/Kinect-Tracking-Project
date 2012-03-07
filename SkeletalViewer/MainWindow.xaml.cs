@@ -26,6 +26,7 @@ using csmatio.types;
 using FolderPickerLib;
 using System.Collections;
 using System.Collections.Generic;
+//using System.Text;
 
 namespace SkeletalViewer
 {
@@ -448,9 +449,21 @@ namespace SkeletalViewer
             double criticalC1D = Convert.ToDouble(criticalC1);
             double criticalC2D = Convert.ToDouble(criticalC2);
             double criticalC3D = Convert.ToDouble(criticalC3);
+            double criticalC11D = Convert.ToDouble(criticalC11);
+            double criticalC21D = Convert.ToDouble(criticalC21);
+            double criticalC31D = Convert.ToDouble(criticalC31);
+            double criticalC12D = Convert.ToDouble(criticalC12);
+            double criticalC22D = Convert.ToDouble(criticalC22);
+            double criticalC32D = Convert.ToDouble(criticalC32);
+            double criticalC13D = Convert.ToDouble(criticalC13);
+            double criticalC23D = Convert.ToDouble(criticalC23);
+            double criticalC33D = Convert.ToDouble(criticalC33);
+            double criticalC14D = Convert.ToDouble(criticalC14);
+            double criticalC24D = Convert.ToDouble(criticalC24);
+            double criticalC34D = Convert.ToDouble(criticalC34);
 
-            double[] ccArray = { criticalC1D, criticalC2D, criticalC3D, criticalC1D, criticalC2D, criticalC3D, criticalC1D, criticalC2D, criticalC3D,
-                                   criticalC1D, criticalC2D, criticalC3D, criticalC1D, criticalC2D, criticalC3D};
+            double[] ccArray = { criticalC1D, criticalC2D, criticalC3D, criticalC11D, criticalC21D, criticalC31D, criticalC12D, criticalC22D, criticalC32D,
+                                   criticalC13D, criticalC23D, criticalC33D, criticalC14D, criticalC24D, criticalC34D};
 
             Double[] skelDataA = (Double[])skelData.ToArray(typeof(double));
             Double[] gpVectorA = (Double[])gpVector.ToArray(typeof(double));
@@ -478,6 +491,15 @@ namespace SkeletalViewer
             try
             {
                 MatFileWriter mfw = new MatFileWriter(folder + @"\" + exercise +criticalC1 + criticalC2 + criticalC3 + "-" + index + ".mat", mlList, true);
+                //StringBuilder sb = new StringBuilder();
+                //sb.Appe
+                StreamWriter w = File.AppendText(folder + @"\" + exercise + ".txt");
+                w.WriteLine(criticalC1 + " " + criticalC2 + " " + criticalC3);
+                w.WriteLine(criticalC11 + " " + criticalC21 + " " + criticalC31);
+                w.WriteLine(criticalC12 + " " + criticalC22 + " " + criticalC32);
+                w.WriteLine(criticalC13 + " " + criticalC23 + " " + criticalC33);
+                w.WriteLine(criticalC14 + " " + criticalC24 + " " + criticalC34);
+                w.Flush();
             }
             catch (Exception err)
             {
@@ -518,6 +540,56 @@ namespace SkeletalViewer
                 criticalC1 = dlg.criticalC1;
                 criticalC2 = dlg.criticalC2;
                 criticalC3 = dlg.criticalC3;
+                criticalC11 = dlg.criticalC11;
+                criticalC21 = dlg.criticalC21;
+                criticalC31 = dlg.criticalC31;
+                criticalC12 = dlg.criticalC12;
+                criticalC22 = dlg.criticalC22;
+                criticalC32 = dlg.criticalC32;
+                criticalC13 = dlg.criticalC13;
+                criticalC23 = dlg.criticalC23;
+                criticalC33 = dlg.criticalC33;
+                criticalC14 = dlg.criticalC14;
+                criticalC24 = dlg.criticalC24;
+                criticalC34 = dlg.criticalC34;
+                index = dlg.index;
+            }
+            return;
+        }
+
+        private void endTraining()
+        {
+            // Instantiate the dialog box
+            ExerciseNameDialogBox dlg = new ExerciseNameDialogBox();
+
+            // Configure the dialog box
+            dlg.Owner = this;
+
+            // Pass the folder location
+            dlg.passFolder(folder, exercise, criticalC1, criticalC2, criticalC3);
+
+            // Open the dialog box modally 
+            dlg.ShowDialog();
+
+            // Process data entered by user if dialog box is accepted
+            if (dlg.DialogResult == true)
+            {
+                exercise = dlg.file;
+                criticalC1 = dlg.criticalC1;
+                criticalC2 = dlg.criticalC2;
+                criticalC3 = dlg.criticalC3;
+                criticalC11 = dlg.criticalC11;
+                criticalC21 = dlg.criticalC21;
+                criticalC31 = dlg.criticalC31;
+                criticalC12 = dlg.criticalC12;
+                criticalC22 = dlg.criticalC22;
+                criticalC32 = dlg.criticalC32;
+                criticalC13 = dlg.criticalC13;
+                criticalC23 = dlg.criticalC23;
+                criticalC33 = dlg.criticalC33;
+                criticalC14 = dlg.criticalC14;
+                criticalC24 = dlg.criticalC24;
+                criticalC34 = dlg.criticalC34;
                 index = dlg.index;
             }
             return;
@@ -545,7 +617,7 @@ namespace SkeletalViewer
                 }
                 if (path & training)
                 {
-                    startTraining();
+                    //startTraining();
                 }
                 else if (path & !training)
                 {
@@ -580,6 +652,10 @@ namespace SkeletalViewer
                 {
                     endDemo();
                 }
+                else
+                {
+                    endTraining();
+                }
 
                 createMatFile();
 
@@ -609,6 +685,18 @@ namespace SkeletalViewer
         private string criticalC1 = "0";
         private string criticalC2 = "0";
         private string criticalC3 = "0";
+        private string criticalC11 = "0";
+        private string criticalC21 = "0";
+        private string criticalC31 = "0";
+        private string criticalC12 = "0";
+        private string criticalC22 = "0";
+        private string criticalC32 = "0";
+        private string criticalC13 = "0";
+        private string criticalC23 = "0";
+        private string criticalC33 = "0";
+        private string criticalC14 = "0";
+        private string criticalC24 = "0";
+        private string criticalC34 = "0";
         private SoundPlayer startAudio = new SoundPlayer(@"C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\DataFiles\Demo\hi.wav");
         private SoundPlayer endAudio = new SoundPlayer(@"C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\DataFiles\Demo\hi.wav");
         ArrayList skelData = new ArrayList();

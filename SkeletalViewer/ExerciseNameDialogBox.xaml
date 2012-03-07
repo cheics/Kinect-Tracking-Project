@@ -13,6 +13,10 @@
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <TextBox Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" TextChanged="TextBox_TextChanged" Name="textBox" ></TextBox>
         <Label Grid.Column="0" Grid.Row="1">File Name:</Label>
@@ -25,13 +29,59 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
                 <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <TextBox Grid.Column="0" Grid.Row="0" Name="CC1" TextChanged="CC_TextChanged"></TextBox>
             <TextBox Grid.Column="1" Grid.Row="0" Name="CC2" TextChanged="CC_TextChanged"></TextBox>
             <TextBox Grid.Column="2" Grid.Row="0" Name="CC3" TextChanged="CC_TextChanged"></TextBox>
+            <CheckBox Grid.Column="3" Grid.Row="0" Name="CB" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="False" Checked="CB_Checked" Unchecked="CB_Unchecked"></CheckBox>
         </Grid>
-        <Label Grid.Column="0" Grid.Row="4" Name="FileIndex" IsEnabled="False"></Label>
-        <WrapPanel Grid.Column="1" Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" >
+        <Grid Grid.Column="1" Grid.Row="4" IsEnabled="True" Name="grid1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" Grid.Row="0" Name="CC11"></TextBox>
+            <TextBox Grid.Column="1" Grid.Row="0" Name="CC21"></TextBox>
+            <TextBox Grid.Column="2" Grid.Row="0" Name="CC31"></TextBox>
+        </Grid>
+        <Grid Grid.Column="1" Grid.Row="5" IsEnabled="True" Name="grid2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" Grid.Row="0" Name="CC12"></TextBox>
+            <TextBox Grid.Column="1" Grid.Row="0" Name="CC22"></TextBox>
+            <TextBox Grid.Column="2" Grid.Row="0" Name="CC32"></TextBox>
+        </Grid>
+        <Grid Grid.Column="1" Grid.Row="6" IsEnabled="True" Name="grid3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" Grid.Row="0" Name="CC13"></TextBox>
+            <TextBox Grid.Column="1" Grid.Row="0" Name="CC23"></TextBox>
+            <TextBox Grid.Column="2" Grid.Row="0" Name="CC33"></TextBox>
+        </Grid>
+        <Grid Grid.Column="1" Grid.Row="7" IsEnabled="True" Name="grid4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" Grid.Row="0" Name="CC14"></TextBox>
+            <TextBox Grid.Column="1" Grid.Row="0" Name="CC24"></TextBox>
+            <TextBox Grid.Column="2" Grid.Row="0" Name="CC34"></TextBox>
+        </Grid>
+        <Label Grid.Column="0" Grid.Row="8" Name="FileIndex" IsEnabled="False"></Label>
+        <WrapPanel Grid.Column="1" Grid.Row="8" Orientation="Horizontal" HorizontalAlignment="Right" >
             <Button Name="Ok" Width="50" Click="Ok_Click">OK</Button>
             <Button Name="Cancel" Width="50" Click="Cancel_Click">Cancel</Button>
         </WrapPanel>
