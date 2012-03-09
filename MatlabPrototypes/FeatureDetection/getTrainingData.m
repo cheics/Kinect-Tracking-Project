@@ -28,20 +28,20 @@ if strcmp(exType, 'squats')
 	peakDetectDim='Y';
 	detectPeakHigh=false;
 elseif strcmp(exType, 'legExt')
-	dataFilePaths={'LegExt-R_1'};
+	dataFilePaths={'LegExt1'};
 	peakDetectJoint='ANKLE_R';
 	peakDetectDim='X';
-	detectPeakHigh=false;
+	detectPeakHigh=true;
 elseif strcmp(exType, 'legRaise')
-	dataFilePaths={'LegRaise-L_1'};
+	dataFilePaths={'LegRaise1'};
 	peakDetectJoint='ANKLE_L';
 	peakDetectDim='Y';
-	detectPeakHigh=false;
+	detectPeakHigh=true;
 elseif strcmp(exType, 'armRaise')
 	dataFilePaths={'ArmRaise1'};
 	peakDetectJoint='HAND_L';
 	peakDetectDim='Y';
-	detectPeakHigh=false;
+	detectPeakHigh=true;
 else
 	err = MException('ResultChk:BadInput', ...
 		'Excercise type %s is not valid, must be one of {%s}',...
