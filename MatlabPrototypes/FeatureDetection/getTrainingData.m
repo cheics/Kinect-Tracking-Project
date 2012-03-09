@@ -10,7 +10,7 @@ function [tr_ft, tr_cl, tt_ft, tt_cl] = getTrainingData(exType, perTrain)
 %	perTrain	: percent training data
 
 %% Find the correct data files to load
-existingTypes={'squats'};
+existingTypes={'squats', 'legExt', 'legRaise', 'armRaise'};
 
 
 if perTrain <0 || perTrain > 1
@@ -21,9 +21,25 @@ if perTrain <0 || perTrain > 1
     throw(err)
 end
 
+baseDir='../../DataFiles/FinalTrainingData/';
 if strcmp(exType, 'squats')
-	dataFileNames=ls('../../DataFiles/CritComp_squats1/*.mat');
+	dataFilePaths={'Squats1', 'Squats2'};
 	peakDetectJoint='HIP_C';
+	peakDetectDim='Y';
+	detectPeakHigh=false;
+elseif strcmp(exType, 'legExt')
+	dataFilePaths={'LegExt-R_1'};
+	peakDetectJoint='ANKLE_R';
+	peakDetectDim='X';
+	detectPeakHigh=false;
+elseif strcmp(exType, 'legRaise')
+	dataFilePaths={'LegRaise-L_1'};
+	peakDetectJoint='ANKLE_L';
+	peakDetectDim='Y';
+	detectPeakHigh=false;
+elseif strcmp(exType, 'armRaise')
+	dataFilePaths={'ArmRaise1'};
+	peakDetectJoint='HAND_L';
 	peakDetectDim='Y';
 	detectPeakHigh=false;
 else
@@ -35,14 +51,23 @@ else
     throw(err)
 end
 
-%% Load the data and output feature vectors
-numberFiles=size(dataFileNames); numberFiles=numberFiles(1);
-dataFilePath=horzcat(repmat('../../DataFiles/CritComp_squats1/', numberFiles, 1),dataFileNames);
+%% Get the paths
+outPaths=cell(0,1);
+for i=1:length(dataFilePaths)
+	pp=dataFilePaths{i};
+	dataFileNames=ls(strcat(baseDir, pp, '/*.mat'));
+	numberFiles=size(dataFileNames,1);
+	for j=1:numberFiles
+		outPaths=[outPaths; ...
+			strcat(baseDir,pp, '/', dataFileNames(j,:))];
+	end
+end
 
+
+%% Load the data and output feature vectors
 trainingData=struct();
-for i = 1:numberFiles
-	fileName=dataFilePath(i,:);
-	cc=FactoryKinectData(fileName);
+for i = 1:length(outPaths)
+	cc=FactoryKinectData(outPaths{i});
 	
 	% Peak detection details per excercise
 	cc.peakDetectJoint=peakDetectJoint;
