@@ -75,6 +75,9 @@ classdef KinectData < handle
 			obj.poseEval=headerDetails.poseEval;
 			obj.repsGuess=size(headerDetails.poseEval); obj.repsGuess=obj.repsGuess(1);
 			obj.calibData=calibrationDetails;
+			obj.calibData.userDetails=struct();
+			[obj.calibData.userDetails.hipHeight, obj.calibData.userDetails.headHeight]= obj.calibHeights();
+			
 			
 			% Method 1 uses skel data
 			% Method 2 uses trig
@@ -92,6 +95,7 @@ classdef KinectData < handle
 		DebugPoseShowFeature(obj, frameNumber, highlightVector)
 		DebugPeaks(obj, varargin)
 		DebugAll(obj, varargin)
+
 	end
 	
 
@@ -108,13 +112,22 @@ classdef KinectData < handle
 		jointXYZ = getJointData(obj, frameNumber, jointName)
 		%	calibrateCamera	Calibrates the ground plane
 		calibrateCamera(obj,methodNumber)
+		%	calibHeights	Gets initial pose heights
+		[hipHeight, headHeight] = calibHeights(obj)
     end
         
     % Feature prototypes are private functions
     methods (Access = private)
-		angleHip = f_hipAngle(obj, frameNumber)
-		angleKnee = f_kneeAngle(obj, frameNumber)
+		angleHip = f_hipAngle_L(obj, frameNumber)
+		angleHip = f_hipAngle_R(obj, frameNumber)
+		angleKnee = f_kneeAngle_L(obj, frameNumber)
+		angleKnee = f_kneeAngle_R(obj, frameNumber)
+		
 		spineScore = f_spineStability(obj, frameNumber)
+		spineCurl_tilt = f_spineCurl_tilt(obj, frameNumber)
+		spineCurl_pitch = f_spineCurl_pitch(obj, frameNumber)
+		spineTilt  = f_spineTilt(obj, frameNumber)
+		spinePitch  = f_spinePitch(obj, frameNumber)
 		
 		elbowshoulder_L = f_elbowAngle_L(obj, frameNumber)
 		elbowshoulder_R = f_elbowAngle_R(obj, frameNumber)
@@ -126,6 +139,9 @@ classdef KinectData < handle
 		handlevel = f_handLevel(obj, frameNumber)
 		hiplevel = f_hipLevel(obj, frameNumber)
 		shoulderlevel = f_shoulderLevel(obj, frameNumber)
+		
+		depthPercent  = f_squatDepth(obj, frameNumber)
+		depthPercent  = f_headDepth(obj, frameNumber)
 	end
 	
 	methods (Access = private, Static=true)

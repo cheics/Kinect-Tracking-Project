@@ -1,4 +1,4 @@
-function angleHip = f_hipAngle(obj, frameNumber)
+function angleHip = f_hipAngle_L(obj, frameNumber)
 	hips=vertcat(...
 		obj.getJointData(frameNumber, 'HIP_L'), ...
 		obj.getJointData(frameNumber, 'HIP_C'), ...
@@ -9,7 +9,7 @@ function angleHip = f_hipAngle(obj, frameNumber)
     hipVector=endpts1(1, :)-endpts1(2, :);
     hipVector(:, 2) = 0; %% reduce y dimensionality
     
-    kneeVector=obj.getJointData(frameNumber, 'HIP_R')-obj.getJointData(frameNumber, 'KNEE_R');
+    kneeVector=obj.getJointData(frameNumber, 'HIP_L')-obj.getJointData(frameNumber, 'KNEE_L');
     kneeVector(:, 2) = 0; %% reduce y dimensionality
     
     angleHip=180-acos(...
