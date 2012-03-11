@@ -1,4 +1,4 @@
-function [wAcc, eAcc, oAcc, o2Acc, dAcc] = LeaveOneOutValid(cl, tf, tc)
+function [wAcc, eAcc, oAcc, o2Acc, dAcc, ccAcc] = LeaveOneOutValid(cl, tf, tc)
 	% cl:	classifier obj
 	% tf:	features
 	% tf:	classes
@@ -7,6 +7,8 @@ function [wAcc, eAcc, oAcc, o2Acc, dAcc] = LeaveOneOutValid(cl, tf, tc)
 	% eAcc: Exact classification 
 	% oAcc: Off by one (222 -> 212)
 	% o2Acc: Off by one dim (222 -> 111)
+	% dAcc: Distance accuracy measure
+	% ccAcc: Correct class accuracy
 	
 	function dd=distAcc(c1, c2, pow)
 		dn2=sum([2,2,2].^pow).^(1/pow);
@@ -42,6 +44,8 @@ function [wAcc, eAcc, oAcc, o2Acc, dAcc] = LeaveOneOutValid(cl, tf, tc)
 	o2Acc=length(find(u_count==3))/n;
 	
 	dAcc=sum(dAcc)/n;
+	
+	ccAcc=length(find(acc==1))/(n*3);
 	
 	
 

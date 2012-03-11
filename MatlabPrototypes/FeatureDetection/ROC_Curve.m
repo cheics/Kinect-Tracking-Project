@@ -7,9 +7,9 @@ testPulls=tp;
 n_excer=size(tf,1);
 default_tt=[10, 15, 20, 30, 40, 50];
 testTimes=[roundn(n_excer/divisions,1):roundn(n_excer/divisions,1):n_excer,n_excer];
-testTimes=sort([default_tt,testTimes]);
+testTimes=unique([default_tt,testTimes]);
 
-acc_ROC=zeros(length(testTimes),5);
+acc_ROC=zeros(length(testTimes),6);
 for i =1:length(testTimes)-1
 	acc_sub=zeros(testPulls,5);
 	for j=1:testPulls
@@ -18,7 +18,7 @@ for i =1:length(testTimes)-1
 		tc_sub=tc(rs,:);
 		[wAcc, eAcc, oAcc, o2Acc, dAcc]=...
 			LeaveOneOutValid(cc, tf_sub, tc_sub);
-		acc_sub(j,:)=[wAcc, eAcc, oAcc, o2Acc, dAcc];
+		acc_sub(j,:)=[wAcc, eAcc, oAcc, o2Acc, dAcc, ccAcc];
 	end
 	acc_ROC(i,:)=mean(acc_sub);
 end
@@ -27,6 +27,6 @@ acc_ROC(length(testTimes),:)=LeaveOneOutValid(cc, tf_sub, tc_sub);
 rocStruct=struct();
 rocStruct.roc_levels=testTimes;
 rocStruct.roc_acc=acc_ROC;
-rocStruct.roc_accNames={'weighted', 'exact', 'offByOne', 'offByOneDim', 'distance'};
+rocStruct.roc_accNames={'weighted', 'exact', 'offByOne', 'offByOneDim', 'distance', 'eachClass'};
 
 end
