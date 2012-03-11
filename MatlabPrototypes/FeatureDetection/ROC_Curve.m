@@ -11,7 +11,7 @@ testTimes=unique([default_tt,testTimes]);
 
 acc_ROC=zeros(length(testTimes),6);
 for i =1:length(testTimes)-1
-	acc_sub=zeros(testPulls,5);
+	acc_sub=zeros(testPulls,6);
 	for j=1:testPulls
 		rs=randperm(n_excer); rs=rs(1:testTimes(i));
 		tf_sub=tf(rs,:);
