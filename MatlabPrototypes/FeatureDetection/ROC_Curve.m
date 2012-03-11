@@ -1,11 +1,13 @@
-function rocStruct = ROC_Curve(cc, tf, tc)
+function rocStruct = ROC_Curve(cc, tf, tc, div, tp)
 %% cc = classifier
 %% tf = feature vector
 %% tc = classes
-divisions=12;
-testPulls=12;
+divisions=div;
+testPulls=tp;
 n_excer=size(tf,1);
+default_tt=[10, 15, 20, 30, 40, 50];
 testTimes=[roundn(n_excer/divisions,1):roundn(n_excer/divisions,1):n_excer,n_excer];
+testTimes=sort([default_tt,testTimes]);
 
 acc_ROC=zeros(length(testTimes),5);
 for i =1:length(testTimes)-1
