@@ -16,7 +16,7 @@ for i =1:length(testTimes)-1
 		rs=randperm(n_excer); rs=rs(1:testTimes(i));
 		tf_sub=tf(rs,:);
 		tc_sub=tc(rs,:);
-		[wAcc, eAcc, oAcc, o2Acc, dAcc]=...
+		[wAcc, eAcc, oAcc, o2Acc, dAcc, ccAcc]=...
 			LeaveOneOutValid(cc, tf_sub, tc_sub);
 		acc_sub(j,:)=[wAcc, eAcc, oAcc, o2Acc, dAcc, ccAcc];
 	end
