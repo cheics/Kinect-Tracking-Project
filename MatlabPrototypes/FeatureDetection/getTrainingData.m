@@ -1,4 +1,4 @@
-function [tr_ft, tr_cl, tt_ft, tt_cl] = getTrainingData(exType, perTrain)
+function [tr_ft, tr_cl, tt_ft, tt_cl] = getTrainingData(exType, perTrain, varargin)
 %% Help
 %	OUTPUTS
 %	tr_ft :	training feature vector
@@ -8,9 +8,13 @@ function [tr_ft, tr_cl, tt_ft, tt_cl] = getTrainingData(exType, perTrain)
 %	INPUTS
 %	exType		: excercise type string >> {squats}
 %	perTrain	: percent training data
+%	varargin	: contains dpw and np
+%					dpw: desired size of sample window (0 is default)
+%					np:  percent of samples to keep on [0-1]
 
 %% Find the correct data files to load
 existingTypes={'squats', 'legExt', 'legRaise', 'armRaise'};
+
 
 
 if perTrain <0 || perTrain > 1
@@ -73,6 +77,11 @@ for i = 1:length(outPaths)
 	cc.peakDetectJoint=peakDetectJoint;
 	cc.joint_xyz=peakDetectDim;
 	cc.findMax=detectPeakHigh;
+	
+	if numel(varargin) == 2
+		cc.dpw=varargin{1};
+		cc.np=varargin{2};
+	end
 			
 	cc.GetFeatures();
 	if i==1
