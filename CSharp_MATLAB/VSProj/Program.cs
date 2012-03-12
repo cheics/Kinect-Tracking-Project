@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
+using System.Data;
 
 // MathWorks assemblies that ship with Builder for .NET
 // and should be registered in Global Assembly Cache
@@ -24,6 +25,25 @@ using System.Runtime.InteropServices;
 namespace example_ML_integration {
 	class Program {
 		static void Main(string[] args) {
+
+            DataTable table = new DataTable();
+            table.Columns.Add("Name", typeof(double));
+            table.Columns.Add("Price", typeof(double));
+            table.Columns.Add("Date", typeof(double));
+
+            table.Rows.Add(1.5, 6.3, 8.9);
+            table.Rows.Add(88.4, 17.1, 0.8);
+            table.Rows.Add(0.04, 63.1, 8.75);
+            table.Rows.Add(0.04, 63.1, 8.75);
+
+            double[] ground = new double[4] {7.5, 8.3, 1.4, 7};
+
+            string exercise = "arm raise";
+
+            double[] output = scores(table, ground, exercise);
+
+            Console.ReadLine();
+
 			// Using feature array as input for simplicity....
 			// Will Later send over the 30x(t) matrix for processing
 			Boolean writeStuff=true;
@@ -93,6 +113,59 @@ namespace example_ML_integration {
 			keypressed = Console.ReadKey(true);
 
 		}
+
+        static private double[] scores(DataTable kinectTable, double[] groundPlane, string exercise)
+        {
+            double[,] kinectData = new double[kinectTable.Rows.Count, kinectTable.Columns.Count];
+            double[,] kinectZeros = new double[kinectTable.Rows.Count, kinectTable.Columns.Count];
+            double[] groundPlaneZeros = new double[4];
+
+            System.Array cr = new double[3];
+            System.Array ci = new double[3];
+
+            for (int r = 0; r < kinectTable.Rows.Count; r++)
+            {
+                for (int c = 0; c < kinectTable.Columns.Count; c++)
+                {
+                    kinectData[r, c] = (double)kinectTable.Rows[r][c];
+                }
+            }
+
+            MLApp.MLAppClass matlab = new MLApp.MLAppClass();
+            matlab.PutFullMatrix("CS_kinectData", "base", kinectData, kinectZeros);
+            matlab.PutFullMatrix("CS_groundPlane", "base", groundPlane, groundPlaneZeros);
+
+
+
+            String MyDocs = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            String ProjectLocation = "Visual Studio 2010\\Projects\\Kinect-Tracking-Project\\MatlabPrototypes\\FeatureDetection";
+            String matFileCD_command = String.Format("cd '{0}';", System.IO.Path.Combine(MyDocs, ProjectLocation));
+
+            matlab.Execute(matFileCD_command);
+            if (exercise == "squats")
+            {
+                matlab.Execute("c = transpose(testBayes(CS_kinectData, CS_groundPlane, 'squats'));");
+            }
+            else if (exercise == "arm raise")
+            {
+                matlab.Execute("c = transpose(testBayes(CS_kinectData, CS_groundPlane, 'arm raise'));");
+            }
+            else if (exercise == "leg raise")
+            {
+                matlab.Execute("c = transpose(testBayes(CS_kinectData, CS_groundPlane, 'leg raise'));");
+            }
+            else if (exercise == "leg extension")
+            {
+                matlab.Execute("c = transpose(testBayes(CS_kinectData, CS_groundPlane, 'leg extension'));");
+            }
+            
+
+            matlab.GetFullMatrix("c", "base", cr, ci);
+
+            double[] cr_d = new double[3];
+            cr_d = (double[])cr;
+            return cr_d;
+        }
 
 
 
