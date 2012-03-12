@@ -44,6 +44,15 @@ namespace SkeletalViewer
             int[] reps = new int[1] { 5 };
             repsCB.ItemsSource = reps;
             repsCB.SelectedIndex = 0;
+
+            // graph
+            List<KeyValuePair<int, int>> valueList = new List<KeyValuePair<int, int>>();
+            valueList.Add(new KeyValuePair<int,int>(1,0));
+            valueList.Add(new KeyValuePair<int,int>(2, 0));
+            valueList.Add(new KeyValuePair<int,int>(3, 0));
+            valueList.Add(new KeyValuePair<int,int>(4, 0));
+            valueList.Add(new KeyValuePair<int,int>(5, 0));
+            lineChart.DataContext = valueList;
         }
 
         private void Window_Loaded(object sender, EventArgs e)
