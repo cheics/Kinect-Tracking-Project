@@ -101,7 +101,7 @@ classdef KinectData < handle
 
     
     % Private utilities
- 	methods (Access = private)
+ 	methods (Access = protected)
         %	poseFinder		Finds the likely maximums for data
 		[peakLocations, rawDataIn, lpf_dataIn] = poseFinder(obj, joint_xyz, xyz, reps, dpw, np, findMax)
 		%	poseFeatures	Gets Feature Vector for a frame
@@ -117,7 +117,7 @@ classdef KinectData < handle
     end
         
     % Feature prototypes are private functions
-    methods (Access = private)
+    methods (Access = protected)
 		angleHip = f_hipAngle_L(obj, frameNumber)
 		angleHip = f_hipAngle_R(obj, frameNumber)
 		angleKnee = f_kneeAngle_L(obj, frameNumber)
@@ -144,7 +144,7 @@ classdef KinectData < handle
 		depthPercent  = f_headDepth(obj, frameNumber)
 	end
 	
-	methods (Access = private, Static=true)
+	methods (Access = protected, Static=true)
 		[endpts, residuals] = bestFitLine3d( X )
 	end
 	
