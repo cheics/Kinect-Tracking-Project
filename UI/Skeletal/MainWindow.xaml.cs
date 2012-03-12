@@ -528,48 +528,48 @@ namespace SkeletalViewer
             return;
         }
 
-        private void startTraining()
-        {
-            // wait to capture data
-            capture = false;
+        //private void startTraining()
+        //{
+        //    // wait to capture data
+        //    capture = false;
 
-            // Instantiate the dialog box
-            ExerciseNameDialogBox dlg = new ExerciseNameDialogBox();
+        //    // Instantiate the dialog box
+        //    ExerciseNameDialogBox dlg = new ExerciseNameDialogBox();
 
-            // Configure the dialog box
-            dlg.Owner = this;
+        //    // Configure the dialog box
+        //    dlg.Owner = this;
 
-            // Pass the folder location
-            dlg.passFolder(folder, exercise, criticalC1, criticalC2, criticalC3);
+        //    // Pass the folder location
+        //    dlg.passFolder(folder, exercise, criticalC1, criticalC2, criticalC3);
 
-            // Open the dialog box modally 
-            dlg.ShowDialog();
+        //    // Open the dialog box modally 
+        //    dlg.ShowDialog();
 
-            // Process data entered by user if dialog box is accepted
-            if (dlg.DialogResult == true)
-            {
-                // begin capturing
-                capture = true;
-                exercise = dlg.file;
-                criticalC1 = dlg.criticalC1;
-                criticalC2 = dlg.criticalC2;
-                criticalC3 = dlg.criticalC3;
-                criticalC11 = dlg.criticalC11;
-                criticalC21 = dlg.criticalC21;
-                criticalC31 = dlg.criticalC31;
-                criticalC12 = dlg.criticalC12;
-                criticalC22 = dlg.criticalC22;
-                criticalC32 = dlg.criticalC32;
-                criticalC13 = dlg.criticalC13;
-                criticalC23 = dlg.criticalC23;
-                criticalC33 = dlg.criticalC33;
-                criticalC14 = dlg.criticalC14;
-                criticalC24 = dlg.criticalC24;
-                criticalC34 = dlg.criticalC34;
-                index = dlg.index;
-            }
-            return;
-        }
+        //    // Process data entered by user if dialog box is accepted
+        //    if (dlg.DialogResult == true)
+        //    {
+        //        // begin capturing
+        //        capture = true;
+        //        exercise = dlg.file;
+        //        criticalC1 = dlg.criticalC1;
+        //        criticalC2 = dlg.criticalC2;
+        //        criticalC3 = dlg.criticalC3;
+        //        criticalC11 = dlg.criticalC11;
+        //        criticalC21 = dlg.criticalC21;
+        //        criticalC31 = dlg.criticalC31;
+        //        criticalC12 = dlg.criticalC12;
+        //        criticalC22 = dlg.criticalC22;
+        //        criticalC32 = dlg.criticalC32;
+        //        criticalC13 = dlg.criticalC13;
+        //        criticalC23 = dlg.criticalC23;
+        //        criticalC33 = dlg.criticalC33;
+        //        criticalC14 = dlg.criticalC14;
+        //        criticalC24 = dlg.criticalC24;
+        //        criticalC34 = dlg.criticalC34;
+        //        index = dlg.index;
+        //    }
+        //    return;
+        //}
 
         private void endTraining()
         {
@@ -620,30 +620,30 @@ namespace SkeletalViewer
         {
             if (button1.Content.ToString() == "Start")
             {
-                if (!path)
-                {
-                    var dlg = new FolderPickerDialog();
-                    if (dlg.ShowDialog() == true)
-                    {
-                        folder = dlg.SelectedPath;
-                        path = true;
-                    }
-                }
-                if (path & training)
-                {
-                    //startTraining();
-                }
-                else if (path & !training)
-                {
-                    startDemo();
-                }
-                if (path & capture)
-                {
+                //if (!path)
+                //{
+                //    var dlg = new FolderPickerDialog();
+                //    if (dlg.ShowDialog() == true)
+                //    {
+                //        folder = dlg.SelectedPath;
+                //        path = true;
+                //    }
+                //}
+                //if (path & training)
+                //{
+                //    //startTraining();
+                //}
+                //else if (path & !training)
+                //{
+                //    startDemo();
+                //}
+                //if (path & capture)
+                //{
                     button1.Background = Brushes.Red;
                     button1.Content = "End";
                     index1 = KinectDiagnosticViewer.dt1.Rows.Count;
                     timeStamp = DateTime.Now.ToString();
-                }
+                //}
             }
             else
             {
@@ -692,7 +692,7 @@ namespace SkeletalViewer
         private string timeStamp;
         private bool training = true;
         private bool capture = true;
-        private bool path = false;
+        //private bool path = false;
         private string folder = "";
         private string exercise = "";
         private string index = "";
