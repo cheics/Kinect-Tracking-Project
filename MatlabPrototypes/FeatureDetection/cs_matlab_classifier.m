@@ -21,7 +21,7 @@ function [outClass] = cs_matlab_classifier(exerciseType, kd, gp)
 	cc=MakeClassifier('BAYES', false);
 	cc.trainClassifiers(tf, tc);
 	
-	kk=FactoryKinectData_CS(kd, gp);
+	kk=FactoryKinectData_CS(exerciseType, kd, gp);
 	kk_features=kk.GetFeatures();
 	outClass=zeros(10,3)-1;
 	
