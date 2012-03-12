@@ -1,65 +1,110 @@
-function contourFind2(dataIn, critComp, useFeatures)
+function contourFind2(features, classes, critComp, useFeatures, wpX, wpY, plotFeatures)
 
-mapPower=1.2;
-nContour=30;
+mapPower=2;
+nContour=60;
+markSize=3;
+xClip=0.05;
+yClip=0.05;
 
-critCompScore=dataIn.classes(:,critComp);
+plotDots=false;
+% plotDots=true;
+
+
+critCompScore=classes(:,critComp);
 i2=find(critCompScore==2); i1=find(critCompScore==1); i0=find(critCompScore==0);
-
-figure;
-plot3(dataIn.features(i2,useFeatures(1)), dataIn.features(i2,useFeatures(2)), dataIn.features(i2,useFeatures(3)), 'g.',...
-	dataIn.features(i1,useFeatures(1)), dataIn.features(i1,useFeatures(2)), dataIn.features(i1,useFeatures(3)),'b.',...
-	dataIn.features(i0,useFeatures(1)), dataIn.features(i0,useFeatures(2)), dataIn.features(i0,useFeatures(3)),'r.')
-
 
 %% Graph KDEs of each cluster
 
 [bandwidth2,density2,X2,Y2]=kde2d( ...
-	[dataIn.features(i2,useFeatures(1)),...
-	dataIn.features(i2,useFeatures(2))] ...
+	[features(i2,useFeatures(1)),...
+	features(i2,useFeatures(2))] ...
 );
 [bandwidth1,density1,X1,Y1]=kde2d( ...
-	[dataIn.features(i1,useFeatures(1)),...
-	dataIn.features(i1,useFeatures(2))] ...
+	[features(i1,useFeatures(1)),...
+	features(i1,useFeatures(2))] ...
 );
 [bandwidth0,density0,X0,Y0]=kde2d( ...
-	[dataIn.features(i0,useFeatures(1)),...
-	dataIn.features(i0,useFeatures(2))] ...
+	[features(i0,useFeatures(1)),...
+	features(i0,useFeatures(2))] ...
 );
+
+
 
 xx=[min(min([X2,X1,X0])), max(max([X2,X1,X0]))];
 yy=[min(min([Y2,Y1,Y0])), max(max([Y2,Y1,Y0]))];
+if ~any(isnan(wpX))
+	xx=wpX;
+	disp(sprintf('Using xLims: [%.1f,%.1f]', wpX));
+end
+if ~any(isnan(wpY))
+	yy=wpY;
+	disp(sprintf('Using yLims: [%.1f,%.1f]', wpY));
+end
 
-figure;
+pointsXY=plotFeatures(:, [useFeatures(1), useFeatures(2)]);
+for i=1:size(pointsXY,1)
+	[pointsXY(i,1), pointsXY(i,2)]=PointRemap(...
+		pointsXY(i,1), pointsXY(i,2), xx, yy, xClip,yClip);
+end
+
+	function plotReps(ps)
+		% plot(ps(:,1),ps(:,2), 'mx', 'MarkerSize', 6, 'LineWidth', 2);
+		for j=1:size(ps,1)
+			text(ps(j,1),ps(j,2),sprintf('%i',j), 'Color', 'm', 'FontWeight', 'bold');
+		end
+	end
+
+
+
+ha=tight_subplot(1, 3, 0.01, 0.01, 0.01);
+
+axes(ha(1));
 hold on;
 contourf(X2,Y2,density2,nContour);
 colormap (c_colourMap('green').^mapPower);
 xlim(xx); ylim(yy);
 shading flat;
-plot(dataIn.features(i2,useFeatures(1)), dataIn.features(i2,useFeatures(2)), 'g.',...
-	dataIn.features(i1,useFeatures(1)), dataIn.features(i1,useFeatures(2)), 'b.',...
-	dataIn.features(i0,useFeatures(1)), dataIn.features(i0,useFeatures(2)), 'r.');
+if plotDots==true
+	plot(features(i2,useFeatures(1)), features(i2,useFeatures(2)), 'g.',...
+		features(i1,useFeatures(1)), features(i1,useFeatures(2)), 'b.',...
+		features(i0,useFeatures(1)), features(i0,useFeatures(2)), 'r.', 'MarkerSize', markSize);
+end
+plotReps(pointsXY);
 hold off;
+freezeColors
 
-figure;
+axes(ha(2));
 hold on;
 contourf(X1,Y1,density1,nContour);
 colormap (c_colourMap('blue').^mapPower);
 xlim(xx); ylim(yy);
 shading flat;
-plot(dataIn.features(i2,useFeatures(1)), dataIn.features(i2,useFeatures(2)), 'g.',...
-	dataIn.features(i1,useFeatures(1)), dataIn.features(i1,useFeatures(2)), 'b.',...
-	dataIn.features(i0,useFeatures(1)), dataIn.features(i0,useFeatures(2)), 'r.');
+if plotDots==true
+	plot(features(i2,useFeatures(1)), features(i2,useFeatures(2)), 'g.',...
+		features(i1,useFeatures(1)), features(i1,useFeatures(2)), 'b.',...
+		features(i0,useFeatures(1)), features(i0,useFeatures(2)), 'r.', 'MarkerSize', markSize);
+end
+plotReps(pointsXY);
 hold off;
+freezeColors
 
-figure;
+axes(ha(3));
 hold on;
 contourf(X0,Y0,density0,nContour);
 colormap (c_colourMap('red').^mapPower);
 xlim(xx); ylim(yy);
 shading flat;
-plot(dataIn.features(i2,useFeatures(1)), dataIn.features(i2,useFeatures(2)), 'g.',...
-	dataIn.features(i1,useFeatures(1)), dataIn.features(i1,useFeatures(2)), 'b.',...
-	dataIn.features(i0,useFeatures(1)), dataIn.features(i0,useFeatures(2)), 'r.');
+if plotDots==true
+	plot(features(i2,useFeatures(1)), features(i2,useFeatures(2)), 'g.',...
+		features(i1,useFeatures(1)), features(i1,useFeatures(2)), 'b.',...
+		features(i0,useFeatures(1)), features(i0,useFeatures(2)), 'r.', 'MarkerSize', markSize);
+	
+end
+plotReps(pointsXY);
 hold off;
+freezeColors
+
+set(ha,'XTickLabel',''); set(ha,'YTickLabel','');
+set(ha,'XTick',[]); set(ha,'YTick',[]);
+
 end
