@@ -30,22 +30,11 @@ namespace example_ML_integration {
 
 			// Using feature array as input for simplicity....
 			// Will Later send over the 30x(t) matrix for processing
-			System.Array ar = new double[11];
-			ar.SetValue(108, 0);
-			ar.SetValue(104, 1);
-			ar.SetValue(166, 2);
-			ar.SetValue(159, 3);
-			ar.SetValue(146, 4);
-			ar.SetValue(121, 5);
-			ar.SetValue(170, 6);
-			ar.SetValue(88, 7);
-			ar.SetValue(85, 8);
-			ar.SetValue(87, 9);
-			ar.SetValue(88, 10);
+			System.Array ar = new double[] { 68.8, 120, 110, 118, 150, 179, 180, 150, 178, 152, 163, 107, 149, 97.8, 90.1, 94.3, 90.9, 89.9, 53.4 };
 
 
 			// create an array ai for the imaginary part of "a"
-			System.Array ai = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+			System.Array ai = new double[] { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 
 
 			/////////////////////
@@ -100,7 +89,8 @@ namespace example_ML_integration {
 			// matlab.Execute("open testBayes.m");
 			// matlab.Execute("dbstop in math_on_numbers.m");
 			matlab.Execute("c = transpose(testBayes(a));");
-			matlab.Execute("com.mathworks.mlservices.MLEditorServices.closeAll");
+			
+			//matlab.Execute("com.mathworks.mlservices.MLEditorServices.closeAll");
 			//matlab.Execute("dbquit all");
 
 			// Using Engine Interface, get the matrix "c" from
