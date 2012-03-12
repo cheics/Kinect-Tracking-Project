@@ -26,19 +26,20 @@ namespace example_ML_integration {
 		static void Main(string[] args) {
 			// Using feature array as input for simplicity....
 			// Will Later send over the 30x(t) matrix for processing
-			Boolean writeStuff=false;
+			Boolean writeStuff=true;
 			double[] ar = new double[] { 68.8, 120, 110, 118, 150, 179, 180, 150, 178, 152, 163, 107, 149, 97.8, 90.1, 94.3, 90.9, 89.9, 53.4 };
 			double[,] ar_2d = new double[,] { { 1, 2 }, { 1, 2 } };
 
 			// initialize variables for return value from ML
 			System.Array cr = new double[3];
+            System.Array ci = new double[3];
 
 			// call MATLAB function
-			UseEngine(ar_2d, ref cr);
+            UseEngine(ar_2d, ref cr, ref ci);
 
 			// Output stuff..
 			if (writeStuff==true) {
-				Console.Clear();
+				//Console.Clear();
 				Console.WriteLine("Input was:");
 				Console.WriteLine(String.Join(",", ar.Select(p => p.ToString()).ToArray()));
 				Console.WriteLine("Output was:");
@@ -50,14 +51,15 @@ namespace example_ML_integration {
 
 
 		}
-		static private void UseEngine(double[,] ar, ref Array cr) {
+		static private void UseEngine(double[,] ar, ref Array cr, ref Array ci) {
 			// Instantiate MATLAB Engine Interface through com
 
 			Console.WriteLine("Matlab Startup...\r\n");
 			MLApp.MLAppClass matlab = new MLApp.MLAppClass();
 
 			// Make imaginary matricies
-			matlab.PutFullMatrix("a", "base", ar, ar);
+            double[] a_d = new double[] { 68.8, 120, 110, 118, 150, 179, 180, 150, 178, 152, 163, 107, 149, 97.8, 90.1, 94.3, 90.9, 89.9, 53.4 };
+			matlab.PutFullMatrix("a", "base", a_d, new double[19]);
 
 			String MyDocs = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 			String ProjectLocation = "Visual Studio 2010\\Projects\\Kinect-Tracking-Project\\MatlabPrototypes\\FeatureDetection";
@@ -69,14 +71,14 @@ namespace example_ML_integration {
 			// matlab.Execute("open testBayes.m");
 			// matlab.Execute("dbstop in math_on_numbers.m");
 			Console.WriteLine("Matlab Processing...\r\n");
-			matlab.Execute("c = transpose(testBayes(a));");
+            matlab.Execute("c = transpose(testBayes(a));");
 			
 			//matlab.Execute("com.mathworks.mlservices.MLEditorServices.closeAll");
 			//matlab.Execute("dbquit all");
 			
 			
 			try {
-				matlab.GetFullMatrix("c", "base", ref cr, ref cr);
+				matlab.GetFullMatrix("c", "base", ref cr, ref ci);
 			} catch (Exception) {
 				Console.WriteLine("someErr");
 			}
@@ -91,6 +93,8 @@ namespace example_ML_integration {
 			keypressed = Console.ReadKey(true);
 
 		}
+
+
 
 	}
 
