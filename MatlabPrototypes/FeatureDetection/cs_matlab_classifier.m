@@ -28,7 +28,8 @@ function [outClass] = cs_matlab_classifier(exerciseType, kd, gp)
 	for i=1:size(kk_features,1)
 		outClass(i,:)=cc.classify(kk_features(i,:));
 	end
-	outClass=reshape(outClass', 1, size(outClass,1)*size(outClass,2))';
+	%outClass=reshape(outClass', 1, size(outClass,1)*size(outClass,2))';
+	save('results.txt', 'outClass', '-ascii', '-double');
 	
 end
 	
