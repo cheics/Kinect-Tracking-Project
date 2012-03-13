@@ -7,8 +7,8 @@ using System.Data;
 
 // MathWorks assemblies that ship with Builder for .NET
 // and should be registered in Global Assembly Cache
-using MathWorks.MATLAB.NET.Utility;
-using MathWorks.MATLAB.NET.Arrays;
+//using MathWorks.MATLAB.NET.Utility;
+//using MathWorks.MATLAB.NET.Arrays;
 
 // Assembly built by Builder for .NET containing 
 // math_on_numbers.m
@@ -26,23 +26,33 @@ namespace example_ML_integration {
 	class Program {
 		static void Main(string[] args) {
 
-            DataTable table = new DataTable();
-            table.Columns.Add("Name", typeof(double));
-            table.Columns.Add("Price", typeof(double));
-            table.Columns.Add("Date", typeof(double));
+            //DataTable table = new DataTable();
+            //table.Columns.Add("Name", typeof(double));
+            //table.Columns.Add("Price", typeof(double));
+            //table.Columns.Add("Date", typeof(double));
 
-            table.Rows.Add(1.5, 6.3, 8.9);
-            table.Rows.Add(88.4, 17.1, 0.8);
-            table.Rows.Add(0.04, 63.1, 8.75);
-            table.Rows.Add(0.04, 63.1, 8.75);
+            //table.Rows.Add(1.5, 6.3, 8.9);
+            //table.Rows.Add(88.4, 17.1, 0.8);
+            //table.Rows.Add(0.04, 63.1, 8.75);
+            //table.Rows.Add(0.04, 63.1, 99);
 
-            double[] ground = new double[4] {7.5, 8.3, 1.4, 7};
+            //DataTable table1 = table.Clone();
+            //for (int i = 0; i < table.Rows.Count; i++)
+            //{
+            //    for (int j = 0; j < table.Columns.Count; j++)
+            //    {
+            //        string test = "test";
+            //    }
+            //    table1.ImportRow(table.Rows[1]);
+            //}
 
-            string exercise = "arm raise";
+            //double[] ground = new double[4] {7.5, 8.3, 1.4, 7};
 
-            double[] output = scores(table, ground, exercise);
+            //string exercise = "arm raise";
 
-            Console.ReadLine();
+            //double[] output = scores(table, ground, exercise);
+
+            //Console.ReadLine();
 
 			// Using feature array as input for simplicity....
 			// Will Later send over the 30x(t) matrix for processing
@@ -144,7 +154,7 @@ namespace example_ML_integration {
             matlab.Execute(matFileCD_command);
             if (exercise == "squats")
             {
-                matlab.Execute("c = transpose(testBayes(CS_kinectData, CS_groundPlane, 'squats'));");
+                matlab.Execute("c = cs_matlab_classifier(CS_kinectData, CS_groundPlane, 'squats');");
             }
             else if (exercise == "arm raise")
             {
