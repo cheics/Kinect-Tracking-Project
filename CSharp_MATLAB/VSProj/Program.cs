@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
+using System.Data;
 
 // MathWorks assemblies that ship with Builder for .NET
 // and should be registered in Global Assembly Cache
@@ -24,72 +25,62 @@ using System.Runtime.InteropServices;
 namespace example_ML_integration {
 	class Program {
 		static void Main(string[] args) {
-			////////////////////
-			// Input Parameters
-			////////////////////
+
+            DataTable table = new DataTable();
+            table.Columns.Add("Name", typeof(double));
+            table.Columns.Add("Price", typeof(double));
+            table.Columns.Add("Date", typeof(double));
+
+            table.Rows.Add(1.5, 6.3, 8.9);
+            table.Rows.Add(88.4, 17.1, 0.8);
+            table.Rows.Add(0.04, 63.1, 8.75);
+            table.Rows.Add(0.04, 63.1, 8.75);
+
+            double[] ground = new double[4] {7.5, 8.3, 1.4, 7};
+
+            string exercise = "arm raise";
+
+            double[] output = scores(table, ground, exercise);
+
+            Console.ReadLine();
 
 			// Using feature array as input for simplicity....
 			// Will Later send over the 30x(t) matrix for processing
-			System.Array ar = new double[11];
-			ar.SetValue(108, 0);
-			ar.SetValue(104, 1);
-			ar.SetValue(166, 2);
-			ar.SetValue(159, 3);
-			ar.SetValue(146, 4);
-			ar.SetValue(121, 5);
-			ar.SetValue(170, 6);
-			ar.SetValue(88, 7);
-			ar.SetValue(85, 8);
-			ar.SetValue(87, 9);
-			ar.SetValue(88, 10);
-
-
-			// create an array ai for the imaginary part of "a"
-			System.Array ai = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-
-			/////////////////////
-			// Output Parameters
-			/////////////////////
+			Boolean writeStuff=true;
+			double[] ar = new double[] { 68.8, 120, 110, 118, 150, 179, 180, 150, 178, 152, 163, 107, 149, 97.8, 90.1, 94.3, 90.9, 89.9, 53.4 };
+			double[,] ar_2d = new double[,] { { 1, 2 }, { 1, 2 } };
 
 			// initialize variables for return value from ML
 			System.Array cr = new double[3];
-			System.Array ci = new double[3];
+            System.Array ci = new double[3];
 
+			// call MATLAB function
+            UseEngine(ar_2d, ref cr, ref ci);
 
-			////////////////////////
-			// Call MATLAB function
-			////////////////////////
-			// call appropriate function/method based on Mode
-			UseEngine(ar, ai, ref cr, ref ci);
-
-
-			/////////////////////
-			// Output to console
-			/////////////////////
-			DisplayArgs(true, ar); // true = input
-			DisplayArgs(false, cr); // false = not-input or output
-			DisplayEnd();
+			// Output stuff..
+			if (writeStuff==true) {
+				//Console.Clear();
+				Console.WriteLine("Input was:");
+				Console.WriteLine(String.Join(",", ar.Select(p => p.ToString()).ToArray()));
+				Console.WriteLine("Output was:");
+				double [] cr_d = new double[3];
+				cr_d = (double [])cr;
+				Console.WriteLine(String.Join(",", cr_d.Select(p => p.ToString()).ToArray()));
+				DisplayEnd();
+			}
 
 
 		}
-		static private void UseEngine(Array ar, Array ai, ref Array cr, ref Array ci) {
-			/*
-			 * This function calls the math_by_numbers routine inside
-			 * MATLAB using the MATLAB Engine's com interface
-			 */
-
+		static private void UseEngine(double[,] ar, ref Array cr, ref Array ci) {
 			// Instantiate MATLAB Engine Interface through com
+
+			Console.WriteLine("Matlab Startup...\r\n");
 			MLApp.MLAppClass matlab = new MLApp.MLAppClass();
 
-			// Using Engine Interface, put the matrix "a" into 
-			// the base workspace.
-			// "a" is a complex variable with a real part of ar,
-			// and an imaginary part of ai
-			matlab.PutFullMatrix("a", "base", ar, ai);
+			// Make imaginary matricies
+            double[] a_d = new double[] { 68.8, 120, 110, 118, 150, 179, 180, 150, 178, 152, 163, 107, 149, 97.8, 90.1, 94.3, 90.9, 89.9, 53.4 };
+			matlab.PutFullMatrix("a", "base", a_d, new double[19]);
 
-			// Using Engine Interface, execute the ML command
-			// contained in quotes.
 			String MyDocs = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 			String ProjectLocation = "Visual Studio 2010\\Projects\\Kinect-Tracking-Project\\MatlabPrototypes\\FeatureDetection";
 			String matFileCD_command = String.Format("cd '{0}';", System.IO.Path.Combine(MyDocs, ProjectLocation));
@@ -99,41 +90,17 @@ namespace example_ML_integration {
 			matlab.Execute(matFileCD_command);
 			// matlab.Execute("open testBayes.m");
 			// matlab.Execute("dbstop in math_on_numbers.m");
-			matlab.Execute("c = transpose(testBayes(a));");
-			matlab.Execute("com.mathworks.mlservices.MLEditorServices.closeAll");
+			Console.WriteLine("Matlab Processing...\r\n");
+            matlab.Execute("c = transpose(testBayes(a));");
+			
+			//matlab.Execute("com.mathworks.mlservices.MLEditorServices.closeAll");
 			//matlab.Execute("dbquit all");
-
-			// Using Engine Interface, get the matrix "c" from
-			// the base workspace.
-			// "c" is a complex variable with a real part of cr,
-			// and an imaginary part of ci
-			Console.WriteLine("Staring to do shit");
+			
+			
 			try {
 				matlab.GetFullMatrix("c", "base", ref cr, ref ci);
 			} catch (Exception) {
 				Console.WriteLine("someErr");
-			}
-		}
-
-
-		static private void DisplayArgs(Boolean In, [In]Array OneReal) {
-			// --cheics: I swear there's a better way to do this. So sorry...
-			String outVals = "";
-			for (int i = 0; i < OneReal.Length; i++) {
-				outVals += OneReal.GetValue(i).ToString();
-				if (i != OneReal.Length - 1) {
-					outVals += ",";
-				}
-
-			}
-
-			if (In) {
-				// this is the first output, so
-				// prepare the console
-				Console.Clear();
-				Console.WriteLine("Input was: [{0}]\r\n", outVals);
-			} else {
-				Console.WriteLine("Output class using squatz classifier (should be [1,2,0]): [{0}]\r\n", outVals);
 			}
 		}
 
@@ -145,8 +112,63 @@ namespace example_ML_integration {
 
 			keypressed = Console.ReadKey(true);
 
-		} // end function DisplayEnd
+		}
 
-	} // end class Program
+        static private double[] scores(DataTable kinectTable, double[] groundPlane, string exercise)
+        {
+            double[,] kinectData = new double[kinectTable.Rows.Count, kinectTable.Columns.Count];
+            double[,] kinectZeros = new double[kinectTable.Rows.Count, kinectTable.Columns.Count];
+            double[] groundPlaneZeros = new double[4];
 
-} // end namespace example_ML_integration
+            System.Array cr = new double[3];
+            System.Array ci = new double[3];
+
+            for (int r = 0; r < kinectTable.Rows.Count; r++)
+            {
+                for (int c = 0; c < kinectTable.Columns.Count; c++)
+                {
+                    kinectData[r, c] = (double)kinectTable.Rows[r][c];
+                }
+            }
+
+            MLApp.MLAppClass matlab = new MLApp.MLAppClass();
+            matlab.PutFullMatrix("CS_kinectData", "base", kinectData, kinectZeros);
+            matlab.PutFullMatrix("CS_groundPlane", "base", groundPlane, groundPlaneZeros);
+
+
+
+            String MyDocs = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            String ProjectLocation = "Visual Studio 2010\\Projects\\Kinect-Tracking-Project\\MatlabPrototypes\\FeatureDetection";
+            String matFileCD_command = String.Format("cd '{0}';", System.IO.Path.Combine(MyDocs, ProjectLocation));
+
+            matlab.Execute(matFileCD_command);
+            if (exercise == "squats")
+            {
+                matlab.Execute("c = transpose(testBayes(CS_kinectData, CS_groundPlane, 'squats'));");
+            }
+            else if (exercise == "arm raise")
+            {
+                matlab.Execute("c = transpose(testBayes(CS_kinectData, CS_groundPlane, 'arm raise'));");
+            }
+            else if (exercise == "leg raise")
+            {
+                matlab.Execute("c = transpose(testBayes(CS_kinectData, CS_groundPlane, 'leg raise'));");
+            }
+            else if (exercise == "leg extension")
+            {
+                matlab.Execute("c = transpose(testBayes(CS_kinectData, CS_groundPlane, 'leg extension'));");
+            }
+            
+
+            matlab.GetFullMatrix("c", "base", cr, ci);
+
+            double[] cr_d = new double[3];
+            cr_d = (double[])cr;
+            return cr_d;
+        }
+
+
+
+	}
+
+}
