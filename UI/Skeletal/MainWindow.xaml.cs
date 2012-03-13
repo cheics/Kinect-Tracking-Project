@@ -26,7 +26,14 @@ using csmatio.types;
 using FolderPickerLib;
 using System.Collections;
 using System.Collections.Generic;
-//using System.Text;
+using System.Runtime.InteropServices;
+using Visiblox.Charts;
+using System.Windows.Controls;
+using LumenWorks.Framework.IO.Csv;
+//using MathWorks.MATLAB.NET.Utility;
+//using MathWorks.MATLAB.NET.Arrays;
+//using dotnet;
+using System.Text;
 
 namespace SkeletalViewer
 {
@@ -46,13 +53,23 @@ namespace SkeletalViewer
             repsCB.SelectedIndex = 0;
 
             // graph
-            List<KeyValuePair<int, int>> valueList = new List<KeyValuePair<int, int>>();
-            valueList.Add(new KeyValuePair<int,int>(1,0));
-            valueList.Add(new KeyValuePair<int,int>(2, 0));
-            valueList.Add(new KeyValuePair<int,int>(3, 0));
-            valueList.Add(new KeyValuePair<int,int>(4, 0));
-            valueList.Add(new KeyValuePair<int,int>(5, 0));
-            lineChart.DataContext = valueList;
+            //We need one data series for each chart series
+            DataSeries<double, double> xData = new DataSeries<double, double>("y=x");
+            DataSeries<double, double> xSquaredData = new DataSeries<double, double>("y=x^2");
+            DataSeries<double, double> xCubedData = new DataSeries<double, double>("y=x^3");
+
+            //Add the data points to the data series according to the correct equation
+            for (double i = 0.0; i < 2; i += 0.01)
+            {
+                xData.Add(new DataPoint<double, double>() { X = i, Y = i });
+                xSquaredData.Add(new DataPoint<double, double>() { X = i, Y = i * i });
+                xCubedData.Add(new DataPoint<double, double>() { X = i, Y = i * i * i });
+            }
+
+            //Finally, associate the data series with the chart series
+            userchart.Series[0].DataSeries = xData;
+            userchart.Series[1].DataSeries = xSquaredData;
+            userchart.Series[2].DataSeries = xCubedData;
         }
 
         private void Window_Loaded(object sender, EventArgs e)
@@ -616,6 +633,79 @@ namespace SkeletalViewer
             return;
         }
 
+        static private string[] scores(DataTable kinectTable, double[] groundPlane, string exercise)
+        {
+            double[,] kinectData = new double[kinectTable.Rows.Count, kinectTable.Columns.Count];
+            double[,] kinectZeros = new double[kinectTable.Rows.Count, kinectTable.Columns.Count];
+            double[] groundPlaneZeros = new double[4];
+
+            //System.Array cr = new double[3];
+            //System.Array ci = new double[3];
+
+            for (int r = 0; r < kinectTable.Rows.Count; r++)
+            {
+                for (int c = 0; c < kinectTable.Columns.Count; c++)
+                {
+                    kinectData[r, c] = (double)kinectTable.Rows[r][c];
+                }
+            }
+
+            MLApp.MLAppClass matlab = new MLApp.MLAppClass();
+            matlab.PutFullMatrix("CS_kinectData", "base", kinectData, kinectZeros);
+            matlab.PutFullMatrix("CS_groundPlane", "base", groundPlane, groundPlaneZeros);
+
+
+
+            String MyDocs = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            String ProjectLocation = "Visual Studio 2010\\Projects\\Kinect-Tracking-Project\\MatlabPrototypes\\FeatureDetection";
+            String matFileCD_command = String.Format("cd '{0}';", System.IO.Path.Combine(MyDocs, ProjectLocation));
+
+            matlab.Execute(matFileCD_command);
+            if (exercise == "squats")
+            {
+                matlab.Execute("c = cs_matlab_classifier('squats', CS_kinectData, CS_groundPlane);");
+            }
+            else if (exercise == "arm raise")
+            {
+                matlab.Execute("c = cs_matlab_classifier(CS_kinectData, CS_groundPlane, 'armRaise');");
+            }
+            else if (exercise == "leg raise")
+            {
+                matlab.Execute("c = cs_matlab_classifier(CS_kinectData, CS_groundPlane, 'legRaise');");
+            }
+            else if (exercise == "leg extension")
+            {
+                matlab.Execute("c = cs_matlab_classifier(CS_kinectData, CS_groundPlane, 'legExt');");
+            }
+
+            string[] cr_d = new string[30];
+
+            StreamReader FileStreamReader;
+
+            FileStreamReader = File.OpenText(System.IO.Path.Combine(MyDocs, ProjectLocation) + "\\results.csv");
+
+            int i = 0;
+
+            while (FileStreamReader.Peek() != -1)
+            {
+                string[] words;
+                words = FileStreamReader.ReadLine().Split(',');
+
+                cr_d[i] = words[0];
+                cr_d[i + 1] = words[1];
+                cr_d[i + 2] = words[2];
+
+                i = i + 3;
+            }
+            FileStreamReader.Close();
+
+            //matlab.GetFullMatrix("c", "base", cr, ci);
+
+            //double[] cr_d = new double[3];
+            //cr_d = (double[])cr;
+            return cr_d;
+        }
+
         private void button1_Click(object sender, RoutedEventArgs e)
         {
             if (button1.Content.ToString() == "Start")
@@ -635,7 +725,7 @@ namespace SkeletalViewer
                 //}
                 //else if (path & !training)
                 //{
-                //    startDemo();
+                //startDemo();
                 //}
                 //if (path & capture)
                 //{
@@ -649,29 +739,43 @@ namespace SkeletalViewer
             {
                 index2 = KinectDiagnosticViewer.dt1.Rows.Count;
                 DataTable dt1 = KinectDiagnosticViewer.dt1.Copy();
-                
+                DataTable dt2 = KinectDiagnosticViewer.dt1.Clone();
+                DataTable dt1gp = KinectDiagnosticViewer.dt1gp.Copy();
+
+                double[] ground = new double[4];
+
+                ground[0] = (double)dt1gp.Rows[index1 + 1][0];
+                ground[1] = (double)dt1gp.Rows[index1 + 1][1];
+                ground[2] = (double)dt1gp.Rows[index1 + 1][2];
+                ground[3] = (double)dt1gp.Rows[index1 + 1][3];
+
+                string test = dt1gp.Rows[0][0].ToString();
+
                 for (int i = (index1 + 1); i < index2-1; i++)
                 {
-                    for (int j = 0; j < 60; j++)
-                    {
-                        skelData.Add(dt1.Rows[i][j]);
-                    }
-                    kinectTilt.Add(dt1.Rows[i][60]);
-                    gpVector.Add(dt1.Rows[i][61]);
-                    gpVector.Add(dt1.Rows[i][62]);
-                    gpVector.Add(dt1.Rows[i][63]);
-                    gpVector.Add(dt1.Rows[i][64]);
+                    //for (int j = 0; j < 60; j++)
+                    //{
+                    //    skelData.Add(dt1.Rows[i][j]);
+                    //}
+                    dt2.ImportRow(dt1.Rows[i]);
+                    //kinectTilt.Add(dt1.Rows[i][60]);
+                    //gpVector.Add(dt1.Rows[i][61]);
+                    //gpVector.Add(dt1.Rows[i][62]);
+                    //gpVector.Add(dt1.Rows[i][63]);
+                    //gpVector.Add(dt1.Rows[i][64]);
                 }
-                if (!training)
-                {
-                    endDemo();
-                }
-                else
-                {
-                    endTraining();
-                }
+                
 
-                createMatFile();
+                //if (!training)
+                //{
+                    //endDemo();
+                //}
+                //else
+                //{
+                //    endTraining();
+                //}
+
+                //createMatFile();
 
                 button1.Background = Brushes.Green;
                 button1.Content = "Start";
@@ -679,6 +783,10 @@ namespace SkeletalViewer
                 skelData.Clear();
                 gpVector.Clear();
                 kinectTilt.Clear();
+
+                string[] output = scores(dt2, ground, "squats");
+
+                feedback.Content = "Feedback: 1. {" + output[0].ToString() + ", " + output[1].ToString() + ", " + output[2].ToString() + "}, 2. {" + output[3].ToString() + ", " + output[4].ToString() + ", " + output[5].ToString() + "}, 3. {" + output[6].ToString() + ", " + output[7].ToString() + ", " + output[8].ToString() + "}, 4. {" + output[9].ToString() + ", " + output[10].ToString() + ", " + output[11].ToString() + "}, 5. {" + output[12].ToString() + ", " + output[13].ToString() + ", " + output[14].ToString() + "}";
             }
             return;
         } //Change to 1 if you only want to view one at a time. Switching will be enabled.
