@@ -1,39 +1,102 @@
 ﻿<Window x:Class="UserInterface.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
         xmlns:charts="clr-namespace:Visiblox.Charts;assembly=Visiblox.Charts"
-        Title="MainWindow" Height="500" Width="584" xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit">
+        Title="MainWindow" xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" Height="675" Width="887">
+    <Window.Resources>
+        <Style x:Key="NoBorder" TargetType="Border">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="Black" />
+        </Style>
+
+        <!-- define tooltip template to show on mouseover of columns -->
+        <ControlTemplate x:Key="CustomTooltipTemplate">
+            <Border BorderBrush="Black" BorderThickness="1" Margin="15,0,0,0"  >
+                <Grid Background="LightGray" >
+                    <StackPanel Orientation="Horizontal" >
+                        <TextBlock Text="$" />
+                        <TextBlock Text="{Binding GDP}" />
+                        <TextBlock Margin="2,0"  Text="billion" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </ControlTemplate>
+    </Window.Resources>
     <Grid Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="245*" />
             <RowDefinition Height="188*" />
-            <RowDefinition Height="28*" />
-        </Grid.RowDefinitions>
+            </Grid.RowDefinitions>
         <Grid Grid.Row="0">
+            
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="288*" />
+                <ColumnDefinition Width="182*" />
+                <ColumnDefinition Width="395*" />
             </Grid.ColumnDefinitions>
-            <Grid Grid.Row="0" Grid.Column="0">
+            <Grid Margin="0,0,0,184">
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition Height="47*" />
+                    <RowDefinition Height="57*" />
+                    <RowDefinition Height="71*" />
                 </Grid.RowDefinitions>
-                <Button Content="Show history" Height="23" HorizontalAlignment="Center" Name="button1" VerticalAlignment="Center" Width="80" Grid.Row="2" Click="button1_Click" Margin="47,20,61,34" />
+                <Button Content="Show history" Height="35" HorizontalAlignment="Center" Name="button1" VerticalAlignment="Center" Width="96" Grid.Row="2" Click="button1_Click" Margin="37,19,155,18" />
                 <Label Content="Select Exercise" Height="28" HorizontalAlignment="Left" Margin="20,0,0,0" Name="label2" VerticalAlignment="Top" Width="107" />
                 <Label Content="Select Component" Grid.Row="1" Height="33" HorizontalAlignment="Left" Margin="14,5,0,0" Name="label1" VerticalAlignment="Top" Width="113" />
                 <ComboBox Height="23" HorizontalAlignment="Left" Margin="20,23,0,0" VerticalAlignment="Top" Width="113" SelectionChanged="comboBox2_SelectionChanged" Name="comboBox2" Text="" FontFamily="Segoe UI" />
-                <ComboBox Grid.Row="1" HorizontalAlignment="Left" Margin="20,38,0,14" Name="comboBox1" Width="113" SelectionChanged="comboBox1_SelectionChanged" IsEditable="False" DataContext="{Binding}" />
+                <ComboBox Grid.Row="1" HorizontalAlignment="Left" Margin="20,28,0,9" Name="comboBox1" Width="113" SelectionChanged="comboBox1_SelectionChanged" IsEditable="False" DataContext="{Binding}" />
             </Grid>
-            <WrapPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center"></WrapPanel>
-            <Calendar Grid.Column="1" Height="170" HorizontalAlignment="Left" Name="calendar1" VerticalAlignment="Top" Width="180" Margin="7,6,0,0" />
+            <Grid Grid.Column="2">
+                <charts:Chart x:Name="DailyChart" Width="Auto" Height="Auto" Title="Daily Performance" HorizontalAlignment="Center"
+                      PlotAreaBorderStyle="{StaticResource NoBorder}" LegendVisibility="Visible" >
+                    <!--- Add zoom to the chart -->
+                    <charts:Chart.Behaviour>
+                        <charts:ZoomBehaviour />
+                    </charts:Chart.Behaviour>
+                    <!-- Define Y axis-->
+                    <!-- Note that if no label were to set for the axis this declaration wouldn't be needed, the axis is auto created -->
+                    <charts:Chart.YAxis>
+                        <charts:LinearAxis Title="Performance" ShowMinorTicks="False" LabelFormatString="N0" Width="70" >
+                        </charts:LinearAxis>
+                    </charts:Chart.YAxis>
+                    <charts:Chart.XAxis>
+                        <charts:CategoryAxis 
+                                 ShowLabels="True"
+                                 ShowGridStripes="False"
+                                 ShowGridlines="False"
+                                 ShowMajorTicks="False"/>
+                    </charts:Chart.XAxis>
 
+                    <!-- Defining the 3 column series on the chart-->
+                    <charts:Chart.Series>
+                        <!-- Enable tooltips and allow user to select entire series by clicking on one point -->
+                        <charts:ColumnSeries ToolTipEnabled="True" ToolTipTemplate="{StaticResource CustomTooltipTemplate}" SelectionMode="Series">
+                            <charts:ColumnSeries.DataSeries>
+                                <charts:BindableDataSeries />
+                            </charts:ColumnSeries.DataSeries>
+                        </charts:ColumnSeries>
+                        <charts:ColumnSeries ToolTipEnabled="True" ToolTipTemplate="{StaticResource CustomTooltipTemplate}" SelectionMode="Series">
+                            <charts:ColumnSeries.DataSeries>
+                                <charts:BindableDataSeries />
+                            </charts:ColumnSeries.DataSeries>
+                        </charts:ColumnSeries>
+                        <charts:ColumnSeries ToolTipEnabled="True" ToolTipTemplate="{StaticResource CustomTooltipTemplate}" SelectionMode="Series">
+                            <charts:ColumnSeries.DataSeries>
+                                <charts:BindableDataSeries />
+                            </charts:ColumnSeries.DataSeries>
+                        </charts:ColumnSeries>
+                    </charts:Chart.Series>
+                </charts:Chart>
+            </Grid>
+            <Grid Grid.Row="0" Grid.Column="1">
+                <Calendar Height="170" HorizontalAlignment="Left" Margin="2,6,0,0" Name="calendar2" VerticalAlignment="Top" Width="180" SelectedDatesChanged="calendar2_SelectedDatesChanged" />
+            </Grid>
         </Grid>
-        <charts:Chart Grid.Row="1" Name="example" Margin="6,0,36,12" Height="156" VerticalAlignment="Bottom" Background="Transparent"
-                      LegendVisibility="Collapsed">
+        <charts:Chart Grid.Row="1" Name="example" Margin="0,0,0,12" Height="Auto" Width="Auto" VerticalAlignment="Bottom" Background="Transparent"  LegendVisibility="Visible">
             <charts:Chart.Behaviour>
                 <charts:BehaviourManager x:Name="behaviourManager" AllowMultipleEnabled="True">
                     <charts:TrackballBehaviour x:Name="track" />
@@ -41,23 +104,17 @@
                 </charts:BehaviourManager>
             </charts:Chart.Behaviour>
             <charts:Chart.XAxis>
-                <charts:LinearAxis Title="Time" />
+                <charts:DateTimeAxis ShowMinorTicks="False" ShowGridlines="False">
+                </charts:DateTimeAxis>
             </charts:Chart.XAxis>
             <charts:Chart.YAxis>
                 <charts:LinearAxis  LabelFormatString="0'*" ShowMinorTicks="False" ShowGridlines="False" Title="Performance"/>
             </charts:Chart.YAxis>
             <charts:Chart.Series>
-                <charts:LineSeries />
-                <charts:LineSeries />
-                <charts:LineSeries />
+                <charts:LineSeries ShowLine="True" ShowPoints="True" LineStrokeThickness="2"/>
+                <charts:LineSeries ShowLine="True" ShowPoints="False" LineStrokeThickness="2"/>
+                <charts:LineSeries ShowLine="True" ShowPoints="False" LineStrokeThickness="2"/>
             </charts:Chart.Series>
         </charts:Chart>
-        <Rectangle Grid.Row="2" Height="16" HorizontalAlignment="Left" Margin="71,0,0,0" Name="textBox1" VerticalAlignment="Top" Width="19" Fill="BlanchedAlmond"/>
-        <TextBlock Grid.Row="2" Height="25" HorizontalAlignment="Right" Margin="0,0,392,0" Name="textBox3" VerticalAlignment="Top" Width="70" Text="test"/>
-        <Rectangle Grid.Row="2" Height="16" HorizontalAlignment="Left" Margin="170,0,0,0" Name="textBox4" VerticalAlignment="Top" Width="16" Fill="Beige" />
-        <TextBlock Grid.Row="2" Height="25" HorizontalAlignment="Left" Margin="190,0,0,0" Name="textBox5" VerticalAlignment="Top" Width="70" />
-        <Rectangle Grid.Row="2" Height="16" HorizontalAlignment="Left" Margin="260,0,0,0" Name="textBox6" VerticalAlignment="Top" Width="16" 
-                   Fill="Azure"/>
-        <TextBlock Grid.Row="2" Height="25" HorizontalAlignment="Left" Margin="280,0,0,0" Name="textBox7" VerticalAlignment="Top" Width="70" />
     </Grid>
 </Window>
