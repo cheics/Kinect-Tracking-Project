@@ -102,15 +102,22 @@ namespace Microsoft.Samples.Kinect.WpfViewers
                              "HipLeftX", "HipLeftY", "HipLeftZ", "KneeLeftX", "KneeLeftY", "KneeLeftZ", "AnkleLeftX", 
                              "AnkleLeftY", "AnkleLeftZ", "FootLeftX", "FootLeftY", "FootLeftZ", "HipRightX", "HipRightY", 
                              "HipRightZ", "KneeRightX", "KneeRightY", "KneeRightZ", "AnkleRightX", "AnkleRightY", 
-                             "AnkleRightZ", "FootRightX", "FootRightY", "FootRightZ", "Angle", "x", "y", "z", "w"};
+                             "AnkleRightZ", "FootRightX", "FootRightY", "FootRightZ"};
 
-            for (int i = 0; i < 65; i++)
+            string[] array1 = { "x", "y", "z", "w" };
+
+            for (int i = 0; i < 60; i++)
             {
                 DataColumn column1 = new DataColumn(array[i], System.Type.GetType("System.Double"));
                 dt1.Columns.Add(column1);
             }
+            for (int i = 0; i < 4; i++)
+            {
+                DataColumn column1 = new DataColumn(array1[i], System.Type.GetType("System.Double"));
+                dt1gp.Columns.Add(column1);
+            }
         }
-        
+
         /// <summary>
         /// Skeletal tracking only works on one Kinect right now.  So return false if it is already in use.
         /// </summary>
@@ -238,12 +245,13 @@ namespace Microsoft.Samples.Kinect.WpfViewers
                         dr["FootRightX"] = array[57];
                         dr["FootRightY"] = array[58];
                         dr["FootRightZ"] = array[59];
-                        dr["Angle"] = _Kinect.NuiCamera.ElevationAngle;
-                        dr["x"] = skeletonFrame.FloorClipPlane.X;
-                        dr["y"] = skeletonFrame.FloorClipPlane.Y;
-                        dr["z"] = skeletonFrame.FloorClipPlane.Z;
-                        dr["w"] = skeletonFrame.FloorClipPlane.W;
                         dt1.Rows.Add(dr);
+                        DataRow dr1 = dt1gp.NewRow();
+                        dr1["x"] = skeletonFrame.FloorClipPlane.X;
+                        dr1["y"] = skeletonFrame.FloorClipPlane.Y;
+                        dr1["z"] = skeletonFrame.FloorClipPlane.Z;
+                        dr1["w"] = skeletonFrame.FloorClipPlane.W;
+                        dt1gp.Rows.Add(dr1);
                     }
                     trackedSkeleton++;
                 }
@@ -310,5 +318,6 @@ namespace Microsoft.Samples.Kinect.WpfViewers
         #endregion Private State
 
         public static DataTable dt1 = new DataTable();
+        public static DataTable dt1gp = new DataTable();
     }
 }
