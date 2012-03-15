@@ -1,7 +1,8 @@
 function contourFind2(features, classes, critComp, useFeatures, wpX, wpY, plotFeatures)
 
 mapPower=2;
-nContour=60;
+%nContour=60;
+nContour=10;
 markSize=3;
 xClip=0.05;
 yClip=0.05;
@@ -20,7 +21,7 @@ i2=find(critCompScore==2); i1=find(critCompScore==1); i0=find(critCompScore==0);
 	features(i2,useFeatures(2))] ...
 );
 [bandwidth1,density1,X1,Y1]=kde2d( ...
-	[features(i1,useFeatures(1)),...
+	[features(i1,useFeatures(1)),... 
 	features(i1,useFeatures(2))] ...
 );
 [bandwidth0,density0,X0,Y0]=kde2d( ...
@@ -34,24 +35,32 @@ xx=[min(min([X2,X1,X0])), max(max([X2,X1,X0]))];
 yy=[min(min([Y2,Y1,Y0])), max(max([Y2,Y1,Y0]))];
 if ~any(isnan(wpX))
 	xx=wpX;
-	disp(sprintf('Using xLims: [%.1f,%.1f]', wpX));
 end
 if ~any(isnan(wpY))
 	yy=wpY;
-	disp(sprintf('Using yLims: [%.1f,%.1f]', wpY));
 end
+disp(sprintf('Using limX: [%.1f,%.1f]', xx));
+disp(sprintf('Using limY: [%.1f,%.1f]', yy));
 
 pointsXY=plotFeatures(:, [useFeatures(1), useFeatures(2)]);
+points_ib=pointsXY;
+points_ob=pointsXY;
 for i=1:size(pointsXY,1)
-	[pointsXY(i,1), pointsXY(i,2)]=PointRemap(...
-		pointsXY(i,1), pointsXY(i,2), xx, yy, xClip,yClip);
+	[points_ib(i,:), points_ob(i,:)]=PointRemap2(...
+		pointsXY(i,:), xx, yy, xClip,yClip);
 end
 
-	function plotReps(ps)
+
+	function plotReps(ib, ob)
 		% plot(ps(:,1),ps(:,2), 'mx', 'MarkerSize', 6, 'LineWidth', 2);
-		for j=1:size(ps,1)
-			text(ps(j,1),ps(j,2),sprintf('%i',j), 'Color', 'm', 'FontWeight', 'bold');
+		for j=1:size(ib,1)
+			text(ib(j,1),ib(j,2),sprintf('%i',j), 'Color', 'm', 'FontWeight', 'bold');			
+			if any(ib(j,:)~=ob(j,:))
+				arrow(ib(j,:), ob(j,:), ... 
+					'TipAngle', 20, 'BaseAngle', 40,  'Length', 6);
+			end
 		end
+		
 	end
 
 
@@ -69,7 +78,7 @@ if plotDots==true
 		features(i1,useFeatures(1)), features(i1,useFeatures(2)), 'b.',...
 		features(i0,useFeatures(1)), features(i0,useFeatures(2)), 'r.', 'MarkerSize', markSize);
 end
-plotReps(pointsXY);
+plotReps(points_ib,points_ob);
 hold off;
 freezeColors
 
@@ -84,7 +93,7 @@ if plotDots==true
 		features(i1,useFeatures(1)), features(i1,useFeatures(2)), 'b.',...
 		features(i0,useFeatures(1)), features(i0,useFeatures(2)), 'r.', 'MarkerSize', markSize);
 end
-plotReps(pointsXY);
+plotReps(points_ib,points_ob);
 hold off;
 freezeColors
 
@@ -100,7 +109,7 @@ if plotDots==true
 		features(i0,useFeatures(1)), features(i0,useFeatures(2)), 'r.', 'MarkerSize', markSize);
 	
 end
-plotReps(pointsXY);
+plotReps(points_ib,points_ob);
 hold off;
 freezeColors
 

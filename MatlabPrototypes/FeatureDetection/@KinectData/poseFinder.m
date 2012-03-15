@@ -11,18 +11,24 @@ function [peakLocations, rawDataIn, lpf_dataIn] = poseFinder(obj, jointLook, xyz
 	if findMax==false
 		rawDataIn=(rawDataIn-minima_offset)*-1;
 	end
-	
+
     fc = 0.5; % Cut-off frequency (Hz)
     fs = 20; % Sampling rate (Hz)
     order = 3; % Filter order
     [B,A] = butter(order,2*fc/fs); % [0:pi] maps to [0:1] here
     lpf_dataIn=filtfilt(B,A,rawDataIn); % LPF
+	skipFirst=10;
+	lpf_dataIn_trim=lpf_dataIn(skipFirst:end);
+	%lpf_dataIn_trim=lpf_dataIn;
 
+	ten_percent_max=min(rawDataIn)+(max(rawDataIn)-min(rawDataIn))*0.1;
     %'MINPEAKHEIGHT', (min(y)+max(y))/4, ...
-    [pks, loc]=findpeaks(lpf_dataIn,...
-        'MINPEAKDISTANCE', round(size(lpf_dataIn, 1)./(reps*1.5)), ...
-        'NPEAKS', reps+1);
- 
+    [pks, loc]=findpeaks(lpf_dataIn_trim,...
+        'MINPEAKDISTANCE', round(size(lpf_dataIn_trim, 1)./(reps*1.5)), ...
+        'NPEAKS', reps+1, ...
+		'MINPEAKHEIGHT', ten_percent_max);
+	loc=loc+skipFirst;
+	
     if dpw ~= 0
         %Making shaky sampling window
         samples=round(dpw*np);

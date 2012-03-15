@@ -1,16 +1,20 @@
-function KDE_RepPlot(featureReps, exerciseType, cripComp_n)
+function KDE_RepPlot(featureReps, exerciseType, varargin)
 	existingTypes={'squats', 'legExt', 'legRaise', 'armRaise'};
 	if strcmp(exerciseType, 'squats')
-		[tf,tc]=getTrainingData('squats', 1);
+		tf=evalin('base', 'tf_squats'); 
+		tc=evalin('base', 'tc_squats'); 
 		exData=evalin('base', 'squat_KDE_params');
 	elseif strcmp(exerciseType, 'armRaise')
-		[tf,tc]=getTrainingData('armRaise', 1);
+		tf=evalin('base', 'tf_armRaise'); 
+		tc=evalin('base', 'tc_armRaise'); 
 		exData=evalin('base', 'armRaise_KDE_params');
 	elseif strcmp(exerciseType, 'legRaise')
-		[tf,tc]=getTrainingData('legRaise', 1);
+		tf=evalin('base', 'tf_legRaise'); 
+		tc=evalin('base', 'tc_legRaise'); 
 		exData=evalin('base', 'legRaise_KDE_params');
 	elseif strcmp(exerciseType, 'legExt')
-		[tf,tc]=getTrainingData('legExt', 1);
+		tf=evalin('base', 'tf_legExt'); 
+		tc=evalin('base', 'tc_legExt'); 
 		exData=evalin('base', 'legExt_KDE_params');
 	else
 		err = MException('ResultChk:BadInput', ...
@@ -21,6 +25,15 @@ function KDE_RepPlot(featureReps, exerciseType, cripComp_n)
 		throw(err)
 	end
 	
+	if numel(varargin) > 0
+		cripComp_n = varargin{1};
+	elseif  isfield(exData, 'cc_pref')
+		cripComp_n=exData.cc_pref;
+	else
+		cripComp_n=1;
+	end
+	
+	disp(sprintf('Using critical comp %i', cripComp_n));
 	
 	if cripComp_n==1
 		kde_params=exData.critComp1;
