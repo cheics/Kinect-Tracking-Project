@@ -56,7 +56,7 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="Visiblox.Charts">
-      <HintPath>..\..\..\..\..\..\..\Visiblox.Charts\Visiblox.Charts.Wpf\4.0\Visiblox.Charts.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Visiblox.Charts\Visiblox.Charts.Wpf\4.0\Visiblox.Charts.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
