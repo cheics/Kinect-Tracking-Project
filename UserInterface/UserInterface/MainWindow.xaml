@@ -6,94 +6,40 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         xmlns:charts="clr-namespace:Visiblox.Charts;assembly=Visiblox.Charts"
-        Title="MainWindow" xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" Height="675" Width="887">
-    <Window.Resources>
-        <Style x:Key="NoBorder" TargetType="Border">
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="BorderBrush" Value="Black" />
-        </Style>
-
-        <!-- define tooltip template to show on mouseover of columns -->
-        <ControlTemplate x:Key="CustomTooltipTemplate">
-            <Border BorderBrush="Black" BorderThickness="1" Margin="15,0,0,0"  >
-                <Grid Background="LightGray" >
-                    <StackPanel Orientation="Horizontal" >
-                        <TextBlock Text="$" />
-                        <TextBlock Text="{Binding GDP}" />
-                        <TextBlock Margin="2,0"  Text="billion" />
-                    </StackPanel>
-                </Grid>
-            </Border>
-        </ControlTemplate>
-    </Window.Resources>
-    <Grid Background="White">
+        Title="MainWindow" xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" Height="675" Width="887" WindowState="Maximized">
+     <Grid Background="White">
+              
         <Grid.RowDefinitions>
             <RowDefinition Height="245*" />
             <RowDefinition Height="188*" />
-            </Grid.RowDefinitions>
+        </Grid.RowDefinitions>
         <Grid Grid.Row="0">
-            
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="288*" />
-                <ColumnDefinition Width="182*" />
-                <ColumnDefinition Width="395*" />
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="182" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Grid Margin="0,0,0,184">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="47*" />
-                    <RowDefinition Height="57*" />
-                    <RowDefinition Height="71*" />
+            <Grid HorizontalAlignment="Left" Width="173">
+            <Grid.RowDefinitions>
+                    <RowDefinition Height="77*" />
+                    <RowDefinition Height="64*" />
+                    <RowDefinition Height="73*" />
+                    <RowDefinition Height="146*" />
                 </Grid.RowDefinitions>
-                <Button Content="Show history" Height="35" HorizontalAlignment="Center" Name="button1" VerticalAlignment="Center" Width="96" Grid.Row="2" Click="button1_Click" Margin="37,19,155,18" />
-                <Label Content="Select Exercise" Height="28" HorizontalAlignment="Left" Margin="20,0,0,0" Name="label2" VerticalAlignment="Top" Width="107" />
-                <Label Content="Select Component" Grid.Row="1" Height="33" HorizontalAlignment="Left" Margin="14,5,0,0" Name="label1" VerticalAlignment="Top" Width="113" />
-                <ComboBox Height="23" HorizontalAlignment="Left" Margin="20,23,0,0" VerticalAlignment="Top" Width="113" SelectionChanged="comboBox2_SelectionChanged" Name="comboBox2" Text="" FontFamily="Segoe UI" />
-                <ComboBox Grid.Row="1" HorizontalAlignment="Left" Margin="20,28,0,9" Name="comboBox1" Width="113" SelectionChanged="comboBox1_SelectionChanged" IsEditable="False" DataContext="{Binding}" />
+                
+                <Button Content="Show history" Height="35" HorizontalAlignment="Center" 
+                        Name="button1" VerticalAlignment="Center" Width="96" Grid.Row="2" Click="button1_Click" BorderBrush="Black" BorderThickness="2" Background="#FF00FA00"></Button>
+                <Label Content="Select Exercise" Height="28" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="0"
+                       Name="label2" VerticalAlignment="Top" Width="107" />
+                <Label Content="Select Component" Height="33" HorizontalAlignment="Center" VerticalAlignment="Top"  Grid.Column="0" Grid.Row="1"
+                       Name="label1" Width="113" />
+                <ComboBox Height="43" VerticalAlignment="Center" Width="173" HorizontalAlignment="Center"
+                          SelectionChanged="comboBox2_SelectionChanged" Name="comboBox2" Text="" FontFamily="Segoe UI" Margin="0,37" />
+                <ComboBox Grid.Row="1" HorizontalAlignment="Center" Margin="0,28,0,9" VerticalAlignment="Center" Width="173" Height="43"
+                          Name="comboBox1" SelectionChanged="comboBox1_SelectionChanged" IsEditable="False" DataContext="{Binding}" />
             </Grid>
-            <Grid Grid.Column="2">
-                <charts:Chart x:Name="DailyChart" Width="Auto" Height="Auto" Title="Daily Performance" HorizontalAlignment="Center"
-                      PlotAreaBorderStyle="{StaticResource NoBorder}" LegendVisibility="Visible" >
-                    <!--- Add zoom to the chart -->
-                    <charts:Chart.Behaviour>
-                        <charts:ZoomBehaviour />
-                    </charts:Chart.Behaviour>
-                    <!-- Define Y axis-->
-                    <!-- Note that if no label were to set for the axis this declaration wouldn't be needed, the axis is auto created -->
-                    <charts:Chart.YAxis>
-                        <charts:LinearAxis Title="Performance" ShowMinorTicks="False" LabelFormatString="N0" Width="70" >
-                        </charts:LinearAxis>
-                    </charts:Chart.YAxis>
-                    <charts:Chart.XAxis>
-                        <charts:CategoryAxis 
-                                 ShowLabels="True"
-                                 ShowGridStripes="False"
-                                 ShowGridlines="False"
-                                 ShowMajorTicks="False"/>
-                    </charts:Chart.XAxis>
-
-                    <!-- Defining the 3 column series on the chart-->
-                    <charts:Chart.Series>
-                        <!-- Enable tooltips and allow user to select entire series by clicking on one point -->
-                        <charts:ColumnSeries ToolTipEnabled="True" ToolTipTemplate="{StaticResource CustomTooltipTemplate}" SelectionMode="Series">
-                            <charts:ColumnSeries.DataSeries>
-                                <charts:BindableDataSeries />
-                            </charts:ColumnSeries.DataSeries>
-                        </charts:ColumnSeries>
-                        <charts:ColumnSeries ToolTipEnabled="True" ToolTipTemplate="{StaticResource CustomTooltipTemplate}" SelectionMode="Series">
-                            <charts:ColumnSeries.DataSeries>
-                                <charts:BindableDataSeries />
-                            </charts:ColumnSeries.DataSeries>
-                        </charts:ColumnSeries>
-                        <charts:ColumnSeries ToolTipEnabled="True" ToolTipTemplate="{StaticResource CustomTooltipTemplate}" SelectionMode="Series">
-                            <charts:ColumnSeries.DataSeries>
-                                <charts:BindableDataSeries />
-                            </charts:ColumnSeries.DataSeries>
-                        </charts:ColumnSeries>
-                    </charts:Chart.Series>
-                </charts:Chart>
-            </Grid>
-            <Grid Grid.Row="0" Grid.Column="1">
-                <Calendar Height="170" HorizontalAlignment="Left" Margin="2,6,0,0" Name="calendar2" VerticalAlignment="Top" Width="180" SelectedDatesChanged="calendar2_SelectedDatesChanged" />
+            <Grid Grid.ColumnSpan="3" Margin="179,0,451,0">
+                <Calendar Height="195" HorizontalAlignment="Left" Name="calendar2" VerticalAlignment="Top" Width="312" SelectedDatesChanged="calendar2_SelectedDatesChanged" Margin="-39,0,0,0" BorderBrush="#FF190000" Background="#16004E87" />
             </Grid>
         </Grid>
         <charts:Chart Grid.Row="1" Name="example" Margin="0,0,0,12" Height="Auto" Width="Auto" VerticalAlignment="Bottom" Background="Transparent"  LegendVisibility="Visible">
@@ -112,9 +58,26 @@
             </charts:Chart.YAxis>
             <charts:Chart.Series>
                 <charts:LineSeries ShowLine="True" ShowPoints="True" LineStrokeThickness="2"/>
-                <charts:LineSeries ShowLine="True" ShowPoints="False" LineStrokeThickness="2"/>
-                <charts:LineSeries ShowLine="True" ShowPoints="False" LineStrokeThickness="2"/>
+                <charts:LineSeries ShowLine="True" ShowPoints="True" LineStrokeThickness="2"/>
+                <charts:LineSeries ShowLine="True" ShowPoints="True" LineStrokeThickness="2"/>
             </charts:Chart.Series>
         </charts:Chart>
+        <Grid Margin="411,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="12*" />
+                    <ColumnDefinition Width="242*" />
+                    <ColumnDefinition Width="229*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <charts:PieChart x:Name="cc1chart" HorizontalContentAlignment="Center" IsExploding="True" AnimationEnabled="False" SelectionMode="Multiple" ShowLabels="True" HighlightingEnabled="False" Padding="0,0" BorderThickness="2" LegendVisibility="Hidden" Margin="26,0,0,0" Grid.Column="1"></charts:PieChart>
+                <charts:PieChart x:Name="cc3chart" HorizontalContentAlignment="Center" IsExploding="True" AnimationEnabled="False" SelectionMode="Multiple" ShowLabels="True" LegendVisibility="Visible" FontSize="15" LegendPosition="InsideTopLeft" Margin="0,0,6,6" Grid.Column="2"></charts:PieChart>
+            </Grid>
+            <charts:PieChart x:Name="cc2chart" HorizontalContentAlignment="Center" IsExploding="True" AnimationEnabled="False" LegendPosition="InsideTopRight" SelectionMode="Multiple" FontSize="15" ShowLabels="True" LegendVisibility="Hidden" HighlightingEnabled="True" Margin="21,0,6,0" Grid.Row="1"></charts:PieChart>
+        </Grid>
     </Grid>
 </Window>
