@@ -29,11 +29,14 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Visiblox.Charts;
 using System.Windows.Controls;
-using LumenWorks.Framework.IO.Csv;
+//using LumenWorks.Framework.IO.Csv;
 //using MathWorks.MATLAB.NET.Utility;
 //using MathWorks.MATLAB.NET.Arrays;
 //using dotnet;
 using System.Text;
+using MongoDB.Driver;
+using MongoDB.Bson;
+using MongoDB.Driver.Builders;
 
 namespace SkeletalViewer
 {
@@ -43,6 +46,13 @@ namespace SkeletalViewer
     public partial class MainWindow : Window
     {
         #region ctor & Window events
+        string cc1legend;
+        string cc2legend;
+        string cc3legend;
+        string criticalComponent1Feedback;
+        string criticalComponent2Feedback;
+        string criticalComponent3Feedback;
+        MongoDatabase exerHist;
         public MainWindow()
         {
             InitializeComponent();
@@ -54,22 +64,101 @@ namespace SkeletalViewer
 
             // graph
             //We need one data series for each chart series
-            DataSeries<double, double> xData = new DataSeries<double, double>("y=x");
-            DataSeries<double, double> xSquaredData = new DataSeries<double, double>("y=x^2");
-            DataSeries<double, double> xCubedData = new DataSeries<double, double>("y=x^3");
+            DataSeries<int, double> cc1 = new DataSeries<int, double>("cc1");
+            DataSeries<int, double> cc2 = new DataSeries<int, double>("cc2");
+            DataSeries<int, double> cc3 = new DataSeries<int, double>("cc3");
 
-            //Add the data points to the data series according to the correct equation
-            for (double i = 0.0; i < 2; i += 0.01)
+            String MyDocs = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            String ProjectLocation = "Visual Studio 2010\\Projects\\Kinect-Tracking-Project\\MatlabPrototypes\\FeatureDetection";
+
+            StreamReader FileStreamReader;
+
+            FileStreamReader = File.OpenText(System.IO.Path.Combine(MyDocs, ProjectLocation) + "\\results.csv");
+
+            int i = 1;
+
+            while (FileStreamReader.Peek() != -1)
             {
-                xData.Add(new DataPoint<double, double>() { X = i, Y = i });
-                xSquaredData.Add(new DataPoint<double, double>() { X = i, Y = i * i });
-                xCubedData.Add(new DataPoint<double, double>() { X = i, Y = i * i * i });
+                string[] words;
+                words = FileStreamReader.ReadLine().Split(',');
+
+                double test = double.Parse(words[0]);
+
+                if (test == -1)
+                {
+                    continue;
+                }
+
+                double cc1v = test;
+                double cc2v = double.Parse(words[1]);
+                double cc3v = double.Parse(words[2]);
+
+                if (cc1v == 0) 
+                {
+                    cc1v = 0.05;
+                }
+                if (cc2v == 0) 
+                {
+                    cc2v = 0.05;
+                }
+                if (cc3v == 0) 
+                {
+                    cc3v = 0.05;
+                }
+
+                cc1.Add(new DataPoint<int, double>() {X = i, Y = cc1v});
+                cc2.Add(new DataPoint<int, double>() { X = i, Y = cc2v});
+                cc3.Add(new DataPoint<int, double>() { X = i, Y = cc3v});
+
+                i = i + 1;
             }
+            FileStreamReader.Close();
 
             //Finally, associate the data series with the chart series
-            userchart.Series[0].DataSeries = xData;
-            userchart.Series[1].DataSeries = xSquaredData;
-            userchart.Series[2].DataSeries = xCubedData;
+            userchart.Series[0].DataSeries = cc1;
+            userchart.Series[1].DataSeries = cc2;
+            userchart.Series[2].DataSeries = cc3;
+
+            
+            MongoServer server = MongoServer.Create();
+            exerHist = server.GetDatabase("exerHist");
+
+            MongoCollection<BsonDocument> names = exerHist.GetCollection<BsonDocument>("names");
+            var query = new QueryDocument();
+            foreach (BsonDocument name in names.Find(query))
+            {
+                string nameToAdd = name["name"].ToString();
+            }
+        }
+
+
+
+        private void squatCriticalComponents()
+        {
+            cc1legend = "Depth";
+            cc2legend = "Straight back";
+            cc3legend = "Balance";
+        }
+
+        private void legExtensionCriticalComponents()
+        {
+            cc1legend = "Hip level";
+            cc2legend = "Hip angle";
+            cc3legend = "Spine stability";
+        }
+
+        private void armRaiseCriticalComponents()
+        {
+            cc1legend = "Straight arm";
+            cc2legend = "Hands in front";
+            cc3legend = "Front shoulder angle";
+        }
+
+        private void legLiftCriticalComponents()
+        {
+            cc1legend = "Knee angle";
+            cc2legend = "Spine stability";
+            cc3legend = "Knee out";
         }
 
         private void Window_Loaded(object sender, EventArgs e)
@@ -710,6 +799,9 @@ namespace SkeletalViewer
         {
             if (button1.Content.ToString() == "Start")
             {
+                sample.IsEnabled = false;
+                tb.IsEnabled = false;
+                exercisesCB.IsEnabled = false;
                 //if (!path)
                 //{
                 //    var dlg = new FolderPickerDialog();
@@ -787,6 +879,10 @@ namespace SkeletalViewer
                 string[] output = scores(dt2, ground, "squats");
 
                 feedback.Content = "Feedback: 1. {" + output[0].ToString() + ", " + output[1].ToString() + ", " + output[2].ToString() + "}, 2. {" + output[3].ToString() + ", " + output[4].ToString() + ", " + output[5].ToString() + "}, 3. {" + output[6].ToString() + ", " + output[7].ToString() + ", " + output[8].ToString() + "}, 4. {" + output[9].ToString() + ", " + output[10].ToString() + ", " + output[11].ToString() + "}, 5. {" + output[12].ToString() + ", " + output[13].ToString() + ", " + output[14].ToString() + "}";
+
+                sample.IsEnabled = true;
+                tb.IsEnabled = false;
+                exercisesCB.IsEnabled = false;
             }
             return;
         } //Change to 1 if you only want to view one at a time. Switching will be enabled.
@@ -824,5 +920,220 @@ namespace SkeletalViewer
         ArrayList skelData = new ArrayList();
         ArrayList gpVector = new ArrayList();
         ArrayList kinectTilt = new ArrayList();
+        private string path = "";
+
+        private void sample_Click(object sender, RoutedEventArgs e)
+        {
+            VideoPlayer vd = new VideoPlayer();
+            vd.passVideo(path);
+            vd.ShowDialog();
+        }
+
+        private void exercisesCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            sample.IsEnabled = true;
+            String MyDocs = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            String ProjectLocation = "Visual Studio 2010\\Projects\\Kinect-Tracking-Project\\Videos";
+            path = System.IO.Path.Combine(MyDocs, ProjectLocation) + "\\"+ exercisesCB.SelectedValue.ToString().ToLower() + ".mp4";
+            switch (exercisesCB.SelectedValue.ToString())
+            {
+                case "Squats":
+                    squatCriticalComponents();
+                    break;
+                case "Arm Raise":
+                    armRaiseCriticalComponents();
+                    break;
+                case "Right Leg Extension":
+                    legExtensionCriticalComponents();
+                    break;
+                case "Left Leg Lift":
+                    legLiftCriticalComponents();
+                    break;
+            }
+
+            chartMostRecent();
+        }
+
+        private void chartMostRecent()
+        {
+            // graph
+            //We need one data series for each chart series
+            DataSeries<int, double> cc1 = new DataSeries<int, double>(cc1legend);
+            DataSeries<int, double> cc2 = new DataSeries<int, double>(cc2legend);
+            DataSeries<int, double> cc3 = new DataSeries<int, double>(cc3legend);
+
+            IMongoSortBy sort = SortBy.Ascending("time");
+
+            MongoCollection<BsonDocument> history = exerHist.GetCollection<BsonDocument>("history");
+            var query = Query.And(Query.EQ("exercise", exercisesCB.SelectedValue.ToString()), Query.EQ("name", user.Content.ToString()));
+
+            int i = 1;
+            bool perfect1 = true;
+            bool perfect2 = true;
+            bool perfect3 = true;
+
+            foreach (BsonDocument rep in history.Find(query))
+            {
+
+                double cc1v = (double)rep["cc1"];
+                double cc2v = (double)rep["cc2"];
+                double cc3v = (double)rep["cc3"];
+
+                if (cc1v == 0)
+                {
+                    cc1v = 0.05;
+                }
+                if (cc2v == 0)
+                {
+                    cc2v = 0.05;
+                }
+                if (cc3v == 0)
+                {
+                    cc3v = 0.05;
+                }
+
+                if (perfect1 & (cc1v == 0 | cc1v == 1))
+                {
+                    perfect1 = false;
+                }
+                if (perfect2 & (cc2v == 0 | cc2v == 1))
+                {
+                    perfect2 = false;
+                }
+                if (perfect3 & (cc3v == 0 | cc3v == 1))
+                {
+                    perfect3 = false;
+                }
+
+                cc1.Add(new DataPoint<int, double>() { X = i, Y = cc1v });
+                cc2.Add(new DataPoint<int, double>() { X = i, Y = cc2v });
+                cc3.Add(new DataPoint<int, double>() { X = i, Y = cc3v });
+
+                if (i == 5)
+                {
+                    break;
+                }
+                else
+                    i++;
+            }
+
+            if (i == 0)
+            {
+                // plot nothing
+                for (int j = 1; j <= 5; j++)
+                {
+                    cc1.Add(new DataPoint<int, double>() { X = j, Y = 0 });
+                    cc2.Add(new DataPoint<int, double>() { X = j, Y = 0 });
+                    cc3.Add(new DataPoint<int, double>() { X = j, Y = 0 });
+                }
+                criticalComponent1.Content = "";
+                criticalComponent1.Content = "";
+                criticalComponent1.Content = "";
+            }
+
+            //Finally, associate the data series with the chart series
+            userchart.Series[0].DataSeries = cc1;
+            userchart.Series[1].DataSeries = cc2;
+            userchart.Series[2].DataSeries = cc3;
+
+        }
+
+        private void clearChart()
+        {
+            // graph
+            //We need one data series for each chart series
+            DataSeries<int, double> cc1 = new DataSeries<int, double>(cc1legend);
+            DataSeries<int, double> cc2 = new DataSeries<int, double>(cc2legend);
+            DataSeries<int, double> cc3 = new DataSeries<int, double>(cc3legend);
+
+            for (int i = 1; i <= 5; i++)
+            {
+                cc1.Add(new DataPoint<int, double>() { X = i, Y = 0 });
+                cc2.Add(new DataPoint<int, double>() { X = i, Y = 0 });
+                cc3.Add(new DataPoint<int, double>() { X = i, Y = 0 });
+            }
+
+            //Finally, associate the data series with the chart series
+            userchart.Series[0].DataSeries = cc1;
+            userchart.Series[1].DataSeries = cc2;
+            userchart.Series[2].DataSeries = cc3;
+
+            criticalComponent1.Content = "";
+            criticalComponent1.Content = "";
+            criticalComponent1.Content = "";
+        }
+
+        private void reconstructGraph()
+        {
+            // graph
+            //We need one data series for each chart series
+            DataSeries<int, double> cc1 = new DataSeries<int, double>(cc1legend);
+            DataSeries<int, double> cc2 = new DataSeries<int, double>(cc2legend);
+            DataSeries<int, double> cc3 = new DataSeries<int, double>(cc3legend);
+
+            String MyDocs = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            String ProjectLocation = "Visual Studio 2010\\Projects\\Kinect-Tracking-Project\\MatlabPrototypes\\FeatureDetection";
+
+            StreamReader FileStreamReader;
+
+            FileStreamReader = File.OpenText(System.IO.Path.Combine(MyDocs, ProjectLocation) + "\\results.csv");
+
+            int i = 1;
+
+            while (FileStreamReader.Peek() != -1)
+            {
+                string[] words;
+                words = FileStreamReader.ReadLine().Split(',');
+
+                double test = double.Parse(words[0]);
+
+                if (test == -1)
+                {
+                    continue;
+                }
+
+                double cc1v = test;
+                double cc2v = double.Parse(words[1]);
+                double cc3v = double.Parse(words[2]);
+
+                if (cc1v == 0)
+                {
+                    cc1v = 0.05;
+                }
+                if (cc2v == 0)
+                {
+                    cc2v = 0.05;
+                }
+                if (cc3v == 0)
+                {
+                    cc3v = 0.05;
+                }
+
+                cc1.Add(new DataPoint<int, double>() { X = i, Y = cc1v });
+                cc2.Add(new DataPoint<int, double>() { X = i, Y = cc2v });
+                cc3.Add(new DataPoint<int, double>() { X = i, Y = cc3v });
+
+                i = i + 1;
+            }
+            FileStreamReader.Close();
+
+            //Finally, associate the data series with the chart series
+            userchart.Series[0].DataSeries = cc1;
+            userchart.Series[1].DataSeries = cc2;
+            userchart.Series[2].DataSeries = cc3;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Logon logon = new Logon();
+            App.Current.MainWindow = logon;
+            logon.Show();
+            this.Close();
+        }
+
+        internal void passName(String name)
+        {
+            user.Content = name;
+        }
     }
 }

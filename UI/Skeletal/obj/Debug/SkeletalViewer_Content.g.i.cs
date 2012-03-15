@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("home-icon.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("navigate-right-icon.png")]
 
 

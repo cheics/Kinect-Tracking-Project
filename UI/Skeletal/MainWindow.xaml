@@ -31,43 +31,59 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <ToolBar Grid.Row="0">
-                <Button>
+            <ToolBar Grid.Row="0" Name="tb">
+                <Button Click="Button_Click">
                     <Image Source="/SkeletalViewer;component/Home-icon.png"></Image>
                 </Button>
             </ToolBar>
-            <Label Content="Name:" Grid.Row="1"></Label>
+            <WrapPanel Orientation="Horizontal" Grid.Row="1">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Name:"></Label>
+                    <Label Name="user"></Label>
+                </StackPanel>
+            </WrapPanel>
             <WrapPanel Orientation="Horizontal" Grid.Row="2">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Exercise:"></Label>
-                    <ComboBox Name="exercisesCB" Width="130"></ComboBox>
+                    <ComboBox Name="exercisesCB" Width="130" SelectionChanged="exercisesCB_SelectionChanged"></ComboBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Reps:"></Label>
                     <ComboBox AllowDrop="False" Name="repsCB" Width="30" IsEnabled="False"></ComboBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <Button Name="sample" Content="Sample" HorizontalAlignment="Center" Width="75" Background="SteelBlue"/>
+                    <Button Name="sample" Content="Sample" HorizontalAlignment="Center" Width="75" Background="SteelBlue" Click="sample_Click" IsEnabled="False" />
                     <Button Name="button1" Content="Start" HorizontalAlignment="Center"  Width="75" Background="#FF009200" Click="button1_Click" />
                 </StackPanel>
             </WrapPanel>
-            <Label Content="Last Performed:" Grid.Row="3"></Label>
-            <charts:Chart Grid.Row="4" Name="userchart">
+            <WrapPanel Orientation="Horizontal" Grid.Row="3">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Last Performed:"></Label>
+                    <Label Name="date" Content="N/A"></Label>
+                </StackPanel>
+            </WrapPanel>
+            <charts:Chart Grid.Row="4" Name="userchart" Height="260" Title="Performance">
                 <charts:Chart.XAxis>
-                    <charts:LinearAxis />
+                    <charts:LinearAxis Title="Rep" ShowMajorGridlines="False" ShowMajorTicks="True" ShowMinorTicks="False" MajorTickInterval="1"/>
                 </charts:Chart.XAxis>
                 <charts:Chart.YAxis>
-                    <charts:LinearAxis />
+                    <charts:LinearAxis Title="Score" ShowMinorTicks="False" MajorTickInterval="1"/>
                 </charts:Chart.YAxis>
                 <charts:Chart.Series>
-                    <charts:LineSeries />
-                    <charts:LineSeries />
-                    <charts:LineSeries />
+                    <charts:ColumnSeries />
+                    <charts:ColumnSeries />
+                    <charts:ColumnSeries />
                 </charts:Chart.Series>
             </charts:Chart>
 
             <Label Content="Feedback:" Grid.Row="5" Name="feedback"></Label>
+            <Label Grid.Row="6" Name="criticalComponent1"></Label>
+            <Label Grid.Row="7" Name="criticalComponent2"></Label>
+            <Label Grid.Row="8" Name="criticalComponent3"></Label>
         </Grid>
         <Grid Grid.Column="1">
             
