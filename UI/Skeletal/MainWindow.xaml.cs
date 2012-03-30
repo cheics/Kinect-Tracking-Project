@@ -52,83 +52,88 @@ namespace SkeletalViewer
         string criticalComponent1Feedback;
         string criticalComponent2Feedback;
         string criticalComponent3Feedback;
+        string cc1Audio;
+        string cc2Audio;
+        string cc3Audio;
         MongoDatabase exerHist;
         public MainWindow()
         {
             InitializeComponent();
-            string[] exercises = new string[4] {"Squats", "Arm Raise", "Right Leg Extension", "Left Leg Lift"};
+            string[] exercises = new string[4] {"Squat", "Leg Raise", "Arm Raise", "Hip Abduction"};
             exercisesCB.ItemsSource = exercises;
             int[] reps = new int[1] { 5 };
             repsCB.ItemsSource = reps;
             repsCB.SelectedIndex = 0;
 
-            // graph
-            //We need one data series for each chart series
-            DataSeries<int, double> cc1 = new DataSeries<int, double>("cc1");
-            DataSeries<int, double> cc2 = new DataSeries<int, double>("cc2");
-            DataSeries<int, double> cc3 = new DataSeries<int, double>("cc3");
+            //// graph
+            ////We need one data series for each chart series
+            //DataSeries<int, double> cc1 = new DataSeries<int, double>("cc1");
+            //DataSeries<int, double> cc2 = new DataSeries<int, double>("cc2");
+            //DataSeries<int, double> cc3 = new DataSeries<int, double>("cc3");
 
-            String MyDocs = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            String ProjectLocation = "Visual Studio 2010\\Projects\\Kinect-Tracking-Project\\MatlabPrototypes\\FeatureDetection";
+            //String MyDocs = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            //String ProjectLocation = "Visual Studio 2010\\Projects\\Kinect-Tracking-Project\\MatlabPrototypes\\FeatureDetection";
 
-            StreamReader FileStreamReader;
+            //StreamReader FileStreamReader;
 
-            FileStreamReader = File.OpenText(System.IO.Path.Combine(MyDocs, ProjectLocation) + "\\results.csv");
+            //FileStreamReader = File.OpenText(System.IO.Path.Combine(MyDocs, ProjectLocation) + "\\results.csv");
 
-            int i = 1;
+            //int i = 1;
 
-            while (FileStreamReader.Peek() != -1)
-            {
-                string[] words;
-                words = FileStreamReader.ReadLine().Split(',');
+            //while (FileStreamReader.Peek() != -1)
+            //{
+            //    string[] words;
+            //    words = FileStreamReader.ReadLine().Split(',');
 
-                double test = double.Parse(words[0]);
+            //    double test = double.Parse(words[0]);
 
-                if (test == -1)
-                {
-                    continue;
-                }
+            //    if (test == -1)
+            //    {
+            //        continue;
+            //    }
 
-                double cc1v = test;
-                double cc2v = double.Parse(words[1]);
-                double cc3v = double.Parse(words[2]);
+            //    double cc1v = test;
+            //    double cc2v = double.Parse(words[1]);
+            //    double cc3v = double.Parse(words[2]);
 
-                if (cc1v == 0) 
-                {
-                    cc1v = 0.05;
-                }
-                if (cc2v == 0) 
-                {
-                    cc2v = 0.05;
-                }
-                if (cc3v == 0) 
-                {
-                    cc3v = 0.05;
-                }
+            //    if (cc1v == 0) 
+            //    {
+            //        cc1v = 0.05;
+            //    }
+            //    if (cc2v == 0) 
+            //    {
+            //        cc2v = 0.05;
+            //    }
+            //    if (cc3v == 0) 
+            //    {
+            //        cc3v = 0.05;
+            //    }
 
-                cc1.Add(new DataPoint<int, double>() {X = i, Y = cc1v});
-                cc2.Add(new DataPoint<int, double>() { X = i, Y = cc2v});
-                cc3.Add(new DataPoint<int, double>() { X = i, Y = cc3v});
+            //    cc1.Add(new DataPoint<int, double>() {X = i, Y = cc1v});
+            //    cc2.Add(new DataPoint<int, double>() { X = i, Y = cc2v});
+            //    cc3.Add(new DataPoint<int, double>() { X = i, Y = cc3v});
 
-                i = i + 1;
-            }
-            FileStreamReader.Close();
+            //    i = i + 1;
+            //}
+            //FileStreamReader.Close();
 
-            //Finally, associate the data series with the chart series
-            userchart.Series[0].DataSeries = cc1;
-            userchart.Series[1].DataSeries = cc2;
-            userchart.Series[2].DataSeries = cc3;
+            ////Finally, associate the data series with the chart series
+            //userchart.Series[0].DataSeries = cc1;
+            //userchart.Series[1].DataSeries = cc2;
+            //userchart.Series[2].DataSeries = cc3;
 
             
             MongoServer server = MongoServer.Create();
             exerHist = server.GetDatabase("exerHist");
 
-            MongoCollection<BsonDocument> names = exerHist.GetCollection<BsonDocument>("names");
-            var query = new QueryDocument();
-            foreach (BsonDocument name in names.Find(query))
-            {
-                string nameToAdd = name["name"].ToString();
-            }
+            //MLApp.MLAppClass matlab = new MLApp.MLAppClass();
+
+            //String MyDocs = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            //String ProjectLocation = "Visual Studio 2010\\Projects\\Kinect-Tracking-Project\\MatlabPrototypes\\FeatureDetection";
+            //String matFileCD_command = String.Format("cd '{0}';", System.IO.Path.Combine(MyDocs, ProjectLocation));
+
+            //matlab.Execute(matFileCD_command);
+            //matlab.Execute("initWorkspace();");
         }
 
 
@@ -138,6 +143,12 @@ namespace SkeletalViewer
             cc1legend = "Depth";
             cc2legend = "Straight back";
             cc3legend = "Balance";
+            criticalComponent1Feedback = cc1legend + ": Work on your full range of motion by squatting till parallel to the ground";
+            criticalComponent2Feedback = cc2legend + ": Keep your back straight throughout the exercise by driving your hip";
+            criticalComponent3Feedback = cc3legend + ": Keep your heels on the floor by pushing on them";
+            cc1Audio = "squat_cc1.wav";
+            cc2Audio = "squat_cc2.wav";
+            cc3Audio = "squat_cc3.wav";
         }
 
         private void legExtensionCriticalComponents()
@@ -145,6 +156,12 @@ namespace SkeletalViewer
             cc1legend = "Hip level";
             cc2legend = "Hip angle";
             cc3legend = "Spine stability";
+            criticalComponent1Feedback = cc1legend + ": Keep your hip level throughout the exercise";
+            criticalComponent2Feedback = cc2legend + ": Work on your full range of motion by contracting the glute muscle";
+            criticalComponent3Feedback = cc3legend + ": Keep your back up right throughout the exercise";
+            cc1Audio = "legExt_cc1.wav";
+            cc2Audio = "legExt_cc2.wav";
+            cc3Audio = "legExt_cc3.wav";
         }
 
         private void armRaiseCriticalComponents()
@@ -152,6 +169,12 @@ namespace SkeletalViewer
             cc1legend = "Straight arm";
             cc2legend = "Hands in front";
             cc3legend = "Front shoulder angle";
+            criticalComponent1Feedback = cc1legend + ": Keep your elbows locked through out the exercise";
+            criticalComponent2Feedback = cc2legend + ": Keep your arms/hands parallel and facing each other through out the exercise";
+            criticalComponent3Feedback = cc3legend + ": Increase your range of motion by raising your hands above your head";
+            cc1Audio = "armRaise_cc1.wav";
+            cc2Audio = "armRaise_cc2.wav";
+            cc3Audio = "armRaise_cc3.wav";
         }
 
         private void legLiftCriticalComponents()
@@ -159,6 +182,12 @@ namespace SkeletalViewer
             cc1legend = "Knee angle";
             cc2legend = "Spine stability";
             cc3legend = "Knee out";
+            criticalComponent1Feedback = cc1legend + ": Lift your leg until your thigh is parallel to the floor";
+            criticalComponent2Feedback = cc2legend + ": Keep your back straight throughout the exercise";
+            criticalComponent3Feedback = cc3legend + ": Keep your knees in front of your body";
+            cc1Audio = "kneeRaise_cc1.wav";
+            cc2Audio = "kneeRaise_cc2.wav";
+            cc3Audio = "kneeRaise_cc3.wav";
         }
 
         private void Window_Loaded(object sender, EventArgs e)
@@ -750,21 +779,22 @@ namespace SkeletalViewer
             String matFileCD_command = String.Format("cd '{0}';", System.IO.Path.Combine(MyDocs, ProjectLocation));
 
             matlab.Execute(matFileCD_command);
-            if (exercise == "squats")
+            matlab.Execute("initWorkspace();");
+            if (exercise == "Squat")
             {
                 matlab.Execute("c = cs_matlab_classifier('squats', CS_kinectData, CS_groundPlane);");
             }
-            else if (exercise == "arm raise")
+            else if (exercise == "Arm Raise")
             {
-                matlab.Execute("c = cs_matlab_classifier(CS_kinectData, CS_groundPlane, 'armRaise');");
+                matlab.Execute("c = cs_matlab_classifier('armRaise', CS_kinectData, CS_groundPlane);");
             }
-            else if (exercise == "leg raise")
+            else if (exercise == "Leg Raise")
             {
-                matlab.Execute("c = cs_matlab_classifier(CS_kinectData, CS_groundPlane, 'legRaise');");
+                matlab.Execute("c = cs_matlab_classifier('legRaise', CS_kinectData, CS_groundPlane);");
             }
-            else if (exercise == "leg extension")
+            else if (exercise == "Hip Abduction")
             {
-                matlab.Execute("c = cs_matlab_classifier(CS_kinectData, CS_groundPlane, 'legExt');");
+                matlab.Execute("c = cs_matlab_classifier('legExt', CS_kinectData, CS_groundPlane);");
             }
 
             string[] cr_d = new string[30];
@@ -876,13 +906,19 @@ namespace SkeletalViewer
                 gpVector.Clear();
                 kinectTilt.Clear();
 
-                string[] output = scores(dt2, ground, "squats");
+                string[] output = scores(dt2, ground, exercisesCB.SelectedValue.ToString());
 
-                feedback.Content = "Feedback: 1. {" + output[0].ToString() + ", " + output[1].ToString() + ", " + output[2].ToString() + "}, 2. {" + output[3].ToString() + ", " + output[4].ToString() + ", " + output[5].ToString() + "}, 3. {" + output[6].ToString() + ", " + output[7].ToString() + ", " + output[8].ToString() + "}, 4. {" + output[9].ToString() + ", " + output[10].ToString() + ", " + output[11].ToString() + "}, 5. {" + output[12].ToString() + ", " + output[13].ToString() + ", " + output[14].ToString() + "}";
+                DateTime now = DateTime.UtcNow.ToLocalTime();
+
+                chartCurrent(output, now);
+
+
+
+                //feedback.Content = "Feedback: 1. {" + output[0].ToString() + ", " + output[1].ToString() + ", " + output[2].ToString() + "}, 2. {" + output[3].ToString() + ", " + output[4].ToString() + ", " + output[5].ToString() + "}, 3. {" + output[6].ToString() + ", " + output[7].ToString() + ", " + output[8].ToString() + "}, 4. {" + output[9].ToString() + ", " + output[10].ToString() + ", " + output[11].ToString() + "}, 5. {" + output[12].ToString() + ", " + output[13].ToString() + ", " + output[14].ToString() + "}";
 
                 sample.IsEnabled = true;
-                tb.IsEnabled = false;
-                exercisesCB.IsEnabled = false;
+                tb.IsEnabled = true;
+                exercisesCB.IsEnabled = true;
             }
             return;
         } //Change to 1 if you only want to view one at a time. Switching will be enabled.
@@ -894,8 +930,8 @@ namespace SkeletalViewer
         private int index1;
         private int index2;
         private string timeStamp;
-        private bool training = true;
-        private bool capture = true;
+        //private bool training = true;
+        //private bool capture = true;
         //private bool path = false;
         private string folder = "";
         private string exercise = "";
@@ -926,58 +962,76 @@ namespace SkeletalViewer
         {
             VideoPlayer vd = new VideoPlayer();
             vd.passVideo(path);
-            vd.ShowDialog();
+            vd.Show();
+            //vd.ShowDialog();
         }
 
         private void exercisesCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             sample.IsEnabled = true;
+            button1.IsEnabled = true;
             String MyDocs = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             String ProjectLocation = "Visual Studio 2010\\Projects\\Kinect-Tracking-Project\\Videos";
-            path = System.IO.Path.Combine(MyDocs, ProjectLocation) + "\\"+ exercisesCB.SelectedValue.ToString().ToLower() + ".mp4";
+            path = System.IO.Path.Combine(MyDocs, ProjectLocation) + "\\"+ exercisesCB.SelectedValue.ToString().ToLower().Trim() + ".mp4";
             switch (exercisesCB.SelectedValue.ToString())
             {
-                case "Squats":
+                case "Squat":
                     squatCriticalComponents();
                     break;
                 case "Arm Raise":
                     armRaiseCriticalComponents();
                     break;
-                case "Right Leg Extension":
+                case "Hip Abduction":
                     legExtensionCriticalComponents();
                     break;
-                case "Left Leg Lift":
+                case "Leg Raise":
                     legLiftCriticalComponents();
                     break;
             }
 
+            // clear feedback
+            clearFeedback();
+
             chartMostRecent();
         }
 
-        private void chartMostRecent()
+        private void clearFeedback()
         {
+            criticalComponent1.Text = "";
+            criticalComponent2.Text = "";
+            criticalComponent3.Text = "";
+            buttoncc1.IsEnabled = false;
+            buttoncc2.IsEnabled = false;
+            buttoncc3.IsEnabled = false;
+        }
+
+        private void chartCurrent(string[] scores, DateTime dateTime)
+        {
+            MongoCollection<BsonDocument> history = exerHist.GetCollection<BsonDocument>("history");
+
             // graph
             //We need one data series for each chart series
             DataSeries<int, double> cc1 = new DataSeries<int, double>(cc1legend);
             DataSeries<int, double> cc2 = new DataSeries<int, double>(cc2legend);
             DataSeries<int, double> cc3 = new DataSeries<int, double>(cc3legend);
 
-            IMongoSortBy sort = SortBy.Ascending("time");
-
-            MongoCollection<BsonDocument> history = exerHist.GetCollection<BsonDocument>("history");
-            var query = Query.And(Query.EQ("exercise", exercisesCB.SelectedValue.ToString()), Query.EQ("name", user.Content.ToString()));
-
-            int i = 1;
             bool perfect1 = true;
             bool perfect2 = true;
             bool perfect3 = true;
 
-            foreach (BsonDocument rep in history.Find(query))
-            {
+            int j = 0;
 
-                double cc1v = (double)rep["cc1"];
-                double cc2v = (double)rep["cc2"];
-                double cc3v = (double)rep["cc3"];
+            for(int i = 1; i <=10; i++)
+            {
+                double cc1v = double.Parse(scores[(i*3)-3]);
+                double cc2v = double.Parse(scores[(i*3)-2]);
+                double cc3v = double.Parse(scores[(i*3)-1]);
+
+                if (cc1v == -1 | cc1v == -2)
+                {
+                    j = i;
+                    break;
+                }
 
                 if (cc1v == 0)
                 {
@@ -992,15 +1046,27 @@ namespace SkeletalViewer
                     cc3v = 0.05;
                 }
 
-                if (perfect1 & (cc1v == 0 | cc1v == 1))
+                BsonDocument rep = new BsonDocument {
+                { "name", user.Content.ToString() },
+                { "exercise", exercisesCB.SelectedValue.ToString() },
+                { "cc1", cc1v },
+                { "cc2", cc2v },
+                { "cc3", cc3v },
+                { "time", dateTime.AddSeconds(i)},
+                {"timeid", dateTime}
+                };
+                var options = new MongoInsertOptions(history) { SafeMode = SafeMode.True };
+                history.Save(rep, options);
+
+                if (perfect1 & (cc1v == 0.05 | cc1v == 1))
                 {
                     perfect1 = false;
                 }
-                if (perfect2 & (cc2v == 0 | cc2v == 1))
+                if (perfect2 & (cc2v == 0.05 | cc2v == 1))
                 {
                     perfect2 = false;
                 }
-                if (perfect3 & (cc3v == 0 | cc3v == 1))
+                if (perfect3 & (cc3v == 0.05 | cc3v == 1))
                 {
                     perfect3 = false;
                 }
@@ -1008,27 +1074,184 @@ namespace SkeletalViewer
                 cc1.Add(new DataPoint<int, double>() { X = i, Y = cc1v });
                 cc2.Add(new DataPoint<int, double>() { X = i, Y = cc2v });
                 cc3.Add(new DataPoint<int, double>() { X = i, Y = cc3v });
-
-                if (i == 5)
-                {
-                    break;
-                }
-                else
-                    i++;
             }
 
-            if (i == 0)
+            if (j == 1)
             {
                 // plot nothing
-                for (int j = 1; j <= 5; j++)
+                for (int k = 1; k <= 5; k++)
                 {
-                    cc1.Add(new DataPoint<int, double>() { X = j, Y = 0 });
-                    cc2.Add(new DataPoint<int, double>() { X = j, Y = 0 });
-                    cc3.Add(new DataPoint<int, double>() { X = j, Y = 0 });
+                    cc1.Add(new DataPoint<int, double>() { X = k, Y = 0 });
+                    cc2.Add(new DataPoint<int, double>() { X = k, Y = 0 });
+                    cc3.Add(new DataPoint<int, double>() { X = k, Y = 0 });
                 }
-                criticalComponent1.Content = "";
-                criticalComponent1.Content = "";
-                criticalComponent1.Content = "";
+                criticalComponent1.Text = "";
+                criticalComponent1.Text = "";
+                criticalComponent1.Text = "";
+                date.Content = "N/A";
+            }
+            else
+            {
+                if (perfect1)
+                {
+                    criticalComponent1.Text = cc1legend + ": Excellent!";
+                    buttoncc1.IsEnabled = false;
+                }
+                else
+                {
+                    criticalComponent1.Text = criticalComponent1Feedback;
+                    buttoncc1.IsEnabled = true;
+                }
+                if (perfect2)
+                {
+                    criticalComponent2.Text = cc2legend + ": Excellent!";
+                    buttoncc2.IsEnabled = false;
+                }
+                else
+                {
+                    criticalComponent2.Text = criticalComponent2Feedback;
+                    buttoncc2.IsEnabled = true;
+                }
+                if (perfect3)
+                {
+                    criticalComponent3.Text = cc3legend + ": Excellent!";
+                    buttoncc3.IsEnabled = false;
+                }
+                else
+                {
+                    criticalComponent3.Text = criticalComponent3Feedback;
+                    buttoncc3.IsEnabled = true;
+                }
+                date.Content = dateTime.ToLongDateString() + " " + dateTime.ToShortTimeString(); ;
+            }
+
+            //Finally, associate the data series with the chart series
+            userchart.Series[0].DataSeries = cc1;
+            userchart.Series[1].DataSeries = cc2;
+            userchart.Series[2].DataSeries = cc3;
+        }
+
+        private void chartMostRecent()
+        {
+            // graph
+            //We need one data series for each chart series
+            DataSeries<int, double> cc1 = new DataSeries<int, double>(cc1legend);
+            DataSeries<int, double> cc2 = new DataSeries<int, double>(cc2legend);
+            DataSeries<int, double> cc3 = new DataSeries<int, double>(cc3legend);
+
+            IMongoSortBy sort = SortBy.Descending("time");
+
+            MongoCollection<BsonDocument> history = exerHist.GetCollection<BsonDocument>("history");
+            var query = Query.And(Query.EQ("exercise", exercisesCB.SelectedValue.ToString()), Query.EQ("name", user.Content.ToString()));
+
+            int i = 1;
+            bool perfect1 = true;
+            bool perfect2 = true;
+            bool perfect3 = true;
+
+            bool pass = false;
+
+            DateTime dateSearch = new DateTime();
+
+            foreach (BsonDocument rep in history.Find(query).SetSortOrder(sort))
+            {
+                dateSearch = (DateTime)rep["timeid"];
+                pass = true;
+                break;
+            }
+
+            if (pass)
+            {
+                var query1 = Query.And(Query.EQ("exercise", exercisesCB.SelectedValue.ToString()), Query.EQ("name", user.Content.ToString()), Query.EQ("timeid", dateSearch));
+
+                foreach (BsonDocument rep in history.Find(query1).SetSortOrder(sort))
+                {
+
+                    double cc1v = (double)rep["cc1"];
+                    double cc2v = (double)rep["cc2"];
+                    double cc3v = (double)rep["cc3"];
+
+                    if (cc1v == 0)
+                    {
+                        cc1v = 0.05;
+                    }
+                    if (cc2v == 0)
+                    {
+                        cc2v = 0.05;
+                    }
+                    if (cc3v == 0)
+                    {
+                        cc3v = 0.05;
+                    }
+
+                    if (perfect1 & (cc1v == 0.05 | cc1v == 1))
+                    {
+                        perfect1 = false;
+                    }
+                    if (perfect2 & (cc2v == 0.05 | cc2v == 1))
+                    {
+                        perfect2 = false;
+                    }
+                    if (perfect3 & (cc3v == 0.05 | cc3v == 1))
+                    {
+                        perfect3 = false;
+                    }
+
+                    cc1.Add(new DataPoint<int, double>() { X = i, Y = cc1v });
+                    cc2.Add(new DataPoint<int, double>() { X = i, Y = cc2v });
+                    cc3.Add(new DataPoint<int, double>() { X = i, Y = cc3v });
+
+                    i++;
+                }
+            }
+
+            if (i == 1)
+            {
+                //// plot nothing
+                //for (int j = 1; j <= 5; j++)
+                //{
+                //    cc1.Add(new DataPoint<int, double>() { X = j, Y = 0 });
+                //    cc2.Add(new DataPoint<int, double>() { X = j, Y = 0 });
+                //    cc3.Add(new DataPoint<int, double>() { X = j, Y = 0 });
+                //}
+                criticalComponent1.Text = "";
+                criticalComponent1.Text = "";
+                criticalComponent1.Text = "";
+                date.Content = "N/A";
+            }
+            else
+            {
+                if (perfect1)
+                {
+                    criticalComponent1.Text = cc1legend + ": Excellent!";
+                    buttoncc1.IsEnabled = false;
+                }
+                else
+                {
+                    criticalComponent1.Text = criticalComponent1Feedback;
+                    buttoncc1.IsEnabled = true;
+                }
+                if (perfect2)
+                {
+                    criticalComponent2.Text = cc2legend + ": Excellent!";
+                    buttoncc2.IsEnabled = false;
+                }
+                else
+                {
+                    criticalComponent2.Text = criticalComponent2Feedback;
+                    buttoncc2.IsEnabled = true;
+                }
+                if (perfect3)
+                {
+                    criticalComponent3.Text = cc3legend + ": Excellent!";
+                    buttoncc3.IsEnabled = false;
+                }
+                else
+                {
+                    criticalComponent3.Text = criticalComponent3Feedback;
+                    buttoncc3.IsEnabled = true;
+                }
+                date.Content = dateSearch.AddHours(-4).ToLongDateString() + " " + dateSearch.AddHours(-4).ToShortTimeString();
             }
 
             //Finally, associate the data series with the chart series
@@ -1058,9 +1281,9 @@ namespace SkeletalViewer
             userchart.Series[1].DataSeries = cc2;
             userchart.Series[2].DataSeries = cc3;
 
-            criticalComponent1.Content = "";
-            criticalComponent1.Content = "";
-            criticalComponent1.Content = "";
+            criticalComponent1.Text = "";
+            criticalComponent1.Text = "";
+            criticalComponent1.Text = "";
         }
 
         private void reconstructGraph()
@@ -1134,6 +1357,33 @@ namespace SkeletalViewer
         internal void passName(String name)
         {
             user.Content = name;
+        }
+
+        private void buttoncc1_Click(object sender, RoutedEventArgs e)
+        {
+            String MyDocs = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            String ProjectLocation = "Visual Studio 2010\\Projects\\Kinect-Tracking-Project\\Audio";
+            string audioPath = System.IO.Path.Combine(MyDocs, ProjectLocation) + "\\" + cc1Audio;
+            SoundPlayer audio = new SoundPlayer(audioPath);
+            audio.PlaySync();
+        }
+
+        private void buttoncc2_Click(object sender, RoutedEventArgs e)
+        {
+            String MyDocs = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            String ProjectLocation = "Visual Studio 2010\\Projects\\Kinect-Tracking-Project\\Audio";
+            string audioPath = System.IO.Path.Combine(MyDocs, ProjectLocation) + "\\" + cc2Audio;
+            SoundPlayer audio = new SoundPlayer(audioPath);
+            audio.PlaySync();
+        }
+
+        private void buttoncc3_Click(object sender, RoutedEventArgs e)
+        {
+            String MyDocs = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            String ProjectLocation = "Visual Studio 2010\\Projects\\Kinect-Tracking-Project\\Audio";
+            string audioPath = System.IO.Path.Combine(MyDocs, ProjectLocation) + "\\" + cc3Audio;
+            SoundPlayer audio = new SoundPlayer(audioPath);
+            audio.PlaySync();
         }
     }
 }

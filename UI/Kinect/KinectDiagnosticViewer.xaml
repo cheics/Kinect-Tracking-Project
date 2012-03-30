@@ -8,11 +8,11 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <WrapPanel Orientation="Vertical">
         <StackPanel>
-            <kt:KinectColorViewer Width="464" Height="348" x:Name="kinectColorViewer" 
+            <kt:KinectColorViewer Width="656" Height="492" x:Name="kinectColorViewer" 
                                   x:FieldModifier="public" Margin="10 0 10 10"/>
         </StackPanel>
         <StackPanel Name="skeletonPanel">
-            <Canvas Width="464" Height="348" Name="skeletonCanvas" Margin="10 0 10 10"
+            <Canvas Width="656" Height="492" Name="skeletonCanvas" Margin="10 0 10 10"
                     Background="Black" ClipToBounds="True"/>
         </StackPanel>
     </WrapPanel>

@@ -106,16 +106,19 @@ namespace Microsoft.Samples.Kinect.WpfViewers
 
             string[] array1 = { "x", "y", "z", "w" };
 
-            for (int i = 0; i < 60; i++)
-            {
-                DataColumn column1 = new DataColumn(array[i], System.Type.GetType("System.Double"));
-                dt1.Columns.Add(column1);
-            }
-            for (int i = 0; i < 4; i++)
-            {
-                DataColumn column1 = new DataColumn(array1[i], System.Type.GetType("System.Double"));
-                dt1gp.Columns.Add(column1);
-            }
+
+                for (int i = 0; i < 60; i++)
+                {
+                    DataColumn column1 = new DataColumn(array[i], System.Type.GetType("System.Double"));
+                    dt1.Columns.Add(column1);
+                }
+
+
+                for (int i = 0; i < 4; i++)
+                {
+                    DataColumn column1 = new DataColumn(array1[i], System.Type.GetType("System.Double"));
+                    dt1gp.Columns.Add(column1);
+                }
         }
 
         /// <summary>

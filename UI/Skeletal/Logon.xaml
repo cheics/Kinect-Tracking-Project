@@ -14,14 +14,14 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <Label Grid.Column="1" Grid.Row="0" Content="Excellent Exercising" HorizontalContentAlignment="Center" VerticalAlignment="Bottom" FontSize="36"></Label>
+        <Label Grid.Column="1" Grid.Row="0" Content="Excellent Exercising" HorizontalContentAlignment="Center" VerticalAlignment="Bottom" FontSize="50"></Label>
         <Grid Grid.Column="1" Grid.Row="1" Height="auto" Width="auto">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="60"/>
             </Grid.ColumnDefinitions>
-            <ComboBox Name="nameCB" Grid.Column="0" Height="35" IsEditable="True" FontSize="22" KeyUp="nameCB_KeyUp"
+            <ComboBox Name="nameCB" Grid.Column="0" Height="50" IsEditable="True" FontSize="32" KeyUp="nameCB_KeyUp"
                       StaysOpenOnEdit="True" IsTextSearchEnabled="False" SelectionChanged="nameCB_SelectionChanged" KeyDown="nameCB_KeyDown">
             </ComboBox>
             <Button Grid.Column="2" Height="35" VerticalAlignment="Center" Click="Button_Click" IsEnabled="False" Name="enter">

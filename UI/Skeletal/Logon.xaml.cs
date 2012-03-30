@@ -88,8 +88,6 @@ namespace SkeletalViewer
 
         private void exerciseInterface()
         {
-            
-
             MainWindow main = new MainWindow();
             main.passName(newName);
             App.Current.MainWindow = main;
@@ -99,11 +97,11 @@ namespace SkeletalViewer
 
         private void addNewUser()
         {
-
+            var options = new MongoInsertOptions(names) { SafeMode = SafeMode.True };
             BsonDocument name = new BsonDocument {
                 { "name", newName }
                 };
-            names.Insert(name);
+            names.Save(name, options);
         }
 
         private void nameCB_KeyDown(object sender, KeyEventArgs e)

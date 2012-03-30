@@ -4,7 +4,7 @@
 library
 C#
 .cs
-C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\UI\Kinect\obj\Debug\
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\UI\Kinect\obj\Debug\
 Microsoft.Samples.Kinect.WpfViewers
 none
 false
@@ -13,7 +13,7 @@ DEBUG;TRACE
 3173858053
 
 7-1690110641
-13507976673
+13673347688
 KinectDepthViewer.xaml;KinectColorViewer.xaml;KinectDiagnosticViewer.xaml;
 
 False

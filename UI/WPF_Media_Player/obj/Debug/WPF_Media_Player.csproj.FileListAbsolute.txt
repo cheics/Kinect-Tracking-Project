@@ -1,0 +1,28 @@
+C:\Users\Abdi\Downloads\WPF_Media_Player\WPF_Media_Player\WPF_Media_Player\bin\Debug\WPF_Media_Player.dll
+C:\Users\Abdi\Downloads\WPF_Media_Player\WPF_Media_Player\WPF_Media_Player\bin\Debug\WPF_Media_Player.pdb
+C:\Users\Abdi\Downloads\WPF_Media_Player\WPF_Media_Player\WPF_Media_Player\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Abdi\Downloads\WPF_Media_Player\WPF_Media_Player\WPF_Media_Player\obj\Debug\Resources\Styles.baml
+C:\Users\Abdi\Downloads\WPF_Media_Player\WPF_Media_Player\WPF_Media_Player\obj\Debug\Resources\Templates.baml
+C:\Users\Abdi\Downloads\WPF_Media_Player\WPF_Media_Player\WPF_Media_Player\obj\Debug\ucMediaPlayer.baml
+C:\Users\Abdi\Downloads\WPF_Media_Player\WPF_Media_Player\WPF_Media_Player\obj\Debug\ucMediaPlayer.g.cs
+C:\Users\Abdi\Downloads\WPF_Media_Player\WPF_Media_Player\WPF_Media_Player\obj\Debug\WPF_Media_Player_MarkupCompile.cache
+C:\Users\Abdi\Downloads\WPF_Media_Player\WPF_Media_Player\WPF_Media_Player\obj\Debug\WPF_Media_Player.g.resources
+C:\Users\Abdi\Downloads\WPF_Media_Player\WPF_Media_Player\WPF_Media_Player\obj\Debug\WPF_Media_Player.Properties.Resources.resources
+C:\Users\Abdi\Downloads\WPF_Media_Player\WPF_Media_Player\WPF_Media_Player\obj\Debug\GenerateResource-ResGen.read.1.tlog
+C:\Users\Abdi\Downloads\WPF_Media_Player\WPF_Media_Player\WPF_Media_Player\obj\Debug\GenerateResource-ResGen.write.1.tlog
+C:\Users\Abdi\Downloads\WPF_Media_Player\WPF_Media_Player\WPF_Media_Player\obj\Debug\WPF_Media_Player.dll
+C:\Users\Abdi\Downloads\WPF_Media_Player\WPF_Media_Player\WPF_Media_Player\obj\Debug\WPF_Media_Player.pdb
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\UI\WPF_Media_Player\bin\Debug\WPF_Media_Player.dll
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\UI\WPF_Media_Player\bin\Debug\WPF_Media_Player.pdb
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\UI\WPF_Media_Player\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\UI\WPF_Media_Player\obj\Debug\Resources\Styles.baml
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\UI\WPF_Media_Player\obj\Debug\Resources\Templates.baml
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\UI\WPF_Media_Player\obj\Debug\ucMediaPlayer.baml
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\UI\WPF_Media_Player\obj\Debug\ucMediaPlayer.g.cs
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\UI\WPF_Media_Player\obj\Debug\WPF_Media_Player_MarkupCompile.cache
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\UI\WPF_Media_Player\obj\Debug\WPF_Media_Player.g.resources
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\UI\WPF_Media_Player\obj\Debug\WPF_Media_Player.Properties.Resources.resources
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\UI\WPF_Media_Player\obj\Debug\ResGen.read.1.tlog
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\UI\WPF_Media_Player\obj\Debug\ResGen.write.1.tlog
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\UI\WPF_Media_Player\obj\Debug\WPF_Media_Player.dll
+C:\Users\cheics\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\UI\WPF_Media_Player\obj\Debug\WPF_Media_Player.pdb

@@ -1,0 +1,8 @@
+C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\CSharp_MATLAB\Output\CSharp_MATLAB.exe.config
+C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\CSharp_MATLAB\Output\CSharp_MATLAB.exe
+C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\CSharp_MATLAB\Output\CSharp_MATLAB.pdb
+C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\CSharp_MATLAB\VSProj\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\CSharp_MATLAB\VSProj\obj\Debug\Interop.MLApp.dll
+C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\CSharp_MATLAB\VSProj\obj\Debug\CSharp_MATLAB.csproj.ResolveComReference.cache
+C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\CSharp_MATLAB\VSProj\obj\Debug\CSharp_MATLAB.exe
+C:\Users\Abdi\Documents\Visual Studio 2010\Projects\Kinect-Tracking-Project\CSharp_MATLAB\VSProj\obj\Debug\CSharp_MATLAB.pdb
